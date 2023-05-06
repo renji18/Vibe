@@ -1,0 +1,1 @@
+export { getAllUser } from "./userActions";
