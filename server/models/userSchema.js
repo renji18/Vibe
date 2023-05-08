@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please Provide A Name"],
       trim: true,
     },
+    userName: {
+      type: String,
+      required: [true, "Please Provide A UserName"],
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, "Please Provide An Email"],
@@ -19,8 +24,20 @@ const userSchema = new mongoose.Schema(
           throw new Error("Please Provide A Valid Email");
       },
     },
+    number: {
+      type: Number,
+      validate(value) {
+        if (value.toString().length !== 10)
+          throw new Error("Please Provide A Valid Number");
+      },
+    },
     bio: {
       type: String,
+    },
+    accountType: {
+      type: String,
+      required: true,
+      default: "public",
     },
     avatar: {
       public_id: {
@@ -45,6 +62,54 @@ const userSchema = new mongoose.Schema(
     confirmPassword: {
       type: String,
       required: [true, "Please Provide Confirm Password"],
+    },
+    savedPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PostData",
+      },
+    ],
+    chat: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "UserData",
+        },
+        chat: {
+          type: String,
+        },
+      },
+    ],
+    notifications: {
+      request: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+        },
+      ],
+      likes: [
+        {
+          userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UserData",
+          },
+          postId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "PostData",
+          },
+        },
+      ],
+      comments: [
+        {
+          userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UserData",
+          },
+          commentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "CommentData",
+          },
+        },
+      ],
     },
     tokens: [
       {
