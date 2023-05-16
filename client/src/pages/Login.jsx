@@ -8,7 +8,7 @@ const Login = () => {
     const submitHandler = () => {
       navigate("/") 
      };
-    
+     
   return (
     <div className="h-screen bg-my-light dark:bg-my-dark flex flex-col items-center ">
       <Email title="LOGIN" text="NEW USER? REGISTER NOW" linkTo="/register" handleClick={submitHandler} />
