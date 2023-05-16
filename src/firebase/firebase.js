@@ -26,14 +26,14 @@ import { getSingleUser } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDpZcyVo6WCtO_u9hwhxCRPigrw6jNqZ6o",
-  authDomain: "vibe-96e57.firebaseapp.com",
-  projectId: "vibe-96e57",
-  storageBucket: "vibe-96e57.appspot.com",
-  messagingSenderId: "874384170808",
-  appId: "1:874384170808:web:a07ba6554dd10cb34aabcd",
-  measurementId: "G-TB75ESS3ZG",
-  databaseURL: "https://vibe-96e57-default-rtdb.firebaseio.com/",
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: "",
+  databaseURL: "",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
