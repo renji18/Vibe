@@ -1,8 +1,9 @@
 import * as actionType from "./actionTypes";
 
-export const getAllUser = (data) => {
+// Getting single user data after login or registration
+export const getSingleUser = (data) => {
   return {
-    type: actionType.GET_ALL_USERS,
+    type: actionType.GET_SINGLE_USER,
     data,
   };
 };

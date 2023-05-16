@@ -1,1 +1,1 @@
-export { getAllUser } from "./userActions";
+export { getSingleUser } from "./userActions";

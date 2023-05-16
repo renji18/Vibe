@@ -1,10 +1,10 @@
 import * as actionType from "../actions/actionTypes";
 
-export const userData = (state = { users: [] }, action) => {
+export const userData = (state = {}, action) => {
   switch (action.type) {
-    case actionType.GET_ALL_USERS:
+    case actionType.GET_SINGLE_USER:
       return {
-        users: action.data,
+        profile: action.data,
       };
 
     default:
