@@ -34,6 +34,7 @@ const EnterDetails = () => {
       profilePic: userProfileImage,
     });
     console.log(userName, userFullName, userBio);
+    
   };
 
   return (
