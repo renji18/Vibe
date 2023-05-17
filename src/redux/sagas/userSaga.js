@@ -4,6 +4,6 @@ export function* userProfileSagaCall(action) {
   try {
     yield console.log(action.data, 'data');
   } catch (error) {
-    yield console.log(error);
+    // yield console.log(error);
   }
 }
