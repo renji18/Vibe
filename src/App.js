@@ -9,7 +9,6 @@ function App() {
     const [userTheme, setUserTheme] = useState("dark");
 
     const {profile} = useSelector(state => state.userData)
-    console.log(profile.email);
 
     useEffect(() => {
       const themeSet = () => {
@@ -37,9 +36,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={!profile ? <Login /> : <Home />} />
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/enterDetails" element={<EnterDetails />} />
+        <Route exact path="/" element={!profile ? <Login /> : !profile?.name ? <EnterDetails /> : <Home />} />
+        <Route exact path="/register" element={!profile ? <Register /> : !profile?.name ? <EnterDetails /> : <Home />} />
       </Routes>
       <Mode themeSwitch={themeSwitch} />
     </BrowserRouter>
