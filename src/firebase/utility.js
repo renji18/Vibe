@@ -14,11 +14,19 @@ import {
   where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import imageCompression from "browser-image-compression";
 
-// returns url for a provided file
+// returns url for a provided image file
 export async function handleUploadImage(storage, file) {
+  const compressImage = await imageCompression(file, {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+    maxIteration: 10,
+    fileType: "image/*",
+  });
   const imgRef = ref(storage, `users/profilePic/${Date.now()}-${file}`);
-  const upload = await uploadBytes(imgRef, "imageFile");
+  const upload = await uploadBytes(imgRef, compressImage);
   const res = await getDownloadURL(upload.ref);
   return res;
 }
@@ -126,13 +134,13 @@ export async function handleSaveRegistrationData(
       ...userData, //name, userName, profilepic, bio
       accountType: "public",
       profilePic: profilePicUrl,
-      personalPosts: [],
-      likedPosts: [],
-      commentedPosts: [],
-      savedPosts: [],
-      friends: [],
-      chat: [],
-      notificatons: { request: [], like: [], comment: [] },
+      personalPosts: [], // saves post ids (different collection for all posts)
+      likedPosts: [], // saves post ids (different collection for all posts)
+      commentedPosts: [], // saves post ids (different collection for all posts)
+      savedPosts: [], // saves post ids (different collection for all posts)
+      friends: [], // saves user ids
+      chat: [], // [{user id, data: [msg]}, {userId, data: [msg]}]
+      notificatons: { request: [], like: [], comment: [] }, // request: [{userId, status(accepted, pending, rejected)}], likes: [{postId, userId}], comment: [{postId, userId}]
     };
     const userRef = doc(firestore, "users", user.uid);
     await updateDoc(userRef, data);
