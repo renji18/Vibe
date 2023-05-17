@@ -132,12 +132,13 @@ export const FirebaseProvider = (props) => {
   };
 
   // sign in email/pw
-  const signinUser = (email, password) => {
+  const signinUser = async (email, password) => {
     if (profile !== null) {
       console.log("A user is already signed in, try logging out first");
       return new Error("A user is already signed in, try logging out first");
     }
-    return signInWithEmailAndPassword(firebaseAuth, email, password);
+    const signIn = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    console.log(signIn);
   };
 
   // sign up with google
@@ -184,6 +185,7 @@ export const FirebaseProvider = (props) => {
         signUpUserUsingEmailAndPassword,
         saveUserDataOnRegistration,
         signupWithGoogle,
+        signinUser,
         signOutUser,
         getDocument,
       }}
