@@ -1,8 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { onAuthStateChanged } from "firebase/auth";
 import { getSingleUser } from "../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,15 +9,7 @@ import {
   handleSignIn,
   hanldeSignOut,
 } from "./utility";
-
-// firebase config
-import firebaseConfig from "./config";
-
-// firebase services instance
-const firebaseApp = initializeApp(firebaseConfig);
-const firebaseAuth = getAuth(firebaseApp);
-const firestore = getFirestore(firebaseApp);
-const storage = getStorage(firebaseApp);
+import { firebaseAuth } from "./config";
 
 // firebase context
 const FirebaseContext = createContext(null);
@@ -37,18 +26,18 @@ export const FirebaseProvider = (props) => {
   // useEffect to catch logins, registrations and logouts
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, async (data) =>
-      handleAuthStateChange(data, firestore, dispatch, getSingleUser, setUser)
+      handleAuthStateChange(data, dispatch, getSingleUser, setUser)
     );
   }, [dispatch]);
 
   // signing up user using email and password
   const signUpUserUsingEmailAndPassword = async (email, password) => {
-    handleRegistration(profile, firestore, email, password, firebaseAuth);
+    handleRegistration(profile, email, password);
   };
 
   // sign in email/pw
   const signInUserUsingEmailAndPassword = async (email, password) => {
-    handleSignIn(profile, firestore, email, password, firebaseAuth);
+    handleSignIn(profile, email, password);
   };
 
   // saving user data on registration
@@ -56,8 +45,6 @@ export const FirebaseProvider = (props) => {
     handleSaveRegistrationData(
       profile,
       userData,
-      storage,
-      firestore,
       user,
       dispatch,
       getSingleUser,
@@ -67,7 +54,7 @@ export const FirebaseProvider = (props) => {
 
   // signout
   const signOutUser = async () => {
-    hanldeSignOut(profile, firebaseAuth);
+    hanldeSignOut(profile);
   };
 
   return (

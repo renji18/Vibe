@@ -15,9 +15,10 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import imageCompression from "browser-image-compression";
+import { firebaseAuth, firestore, storage } from "./config";
 
 // returns url for a provided image file
-export async function handleUploadImage(storage, file) {
+export async function handleUploadImage(file) {
   const compressImage = await imageCompression(file, {
     maxSizeMB: 1,
     maxWidthOrHeight: 1920,
@@ -32,7 +33,7 @@ export async function handleUploadImage(storage, file) {
 }
 
 // returns snap array of any operation in a document
-export async function getSnapOfDocs(firestore, coll, key, operation, value) {
+export async function getSnapOfDocs(coll, key, operation, value) {
   const ref = collection(firestore, coll);
   const q = query(ref, where(key, operation, value));
   const snap = await getDocs(q);
@@ -40,20 +41,14 @@ export async function getSnapOfDocs(firestore, coll, key, operation, value) {
 }
 
 // returns instance of a single document
-export async function getSingleDoc(firestore, coll, id) {
+export async function getSingleDoc(coll, id) {
   const docRef = doc(firestore, coll, id);
   const docSnap = await getDoc(docRef);
   return docSnap;
 }
 
 // handle user registration
-export async function handleRegistration(
-  profile,
-  firestore,
-  email,
-  password,
-  firebaseAuth
-) {
+export async function handleRegistration(profile, email, password) {
   try {
     if (profile !== null) {
       console.log(
@@ -63,7 +58,7 @@ export async function handleRegistration(
         "A user is already signed in, try logging out before signing up a new user"
       );
     }
-    const snap = await getSnapOfDocs(firestore, "users", "email", "==", email);
+    const snap = await getSnapOfDocs("users", "email", "==", email);
     if (!snap.empty) {
       console.log("Your account is already registered, please try logging in.");
       return new Error(
@@ -85,19 +80,13 @@ export async function handleRegistration(
 }
 
 // handle user sign in
-export async function handleSignIn(
-  profile,
-  firestore,
-  email,
-  password,
-  firebaseAuth
-) {
+export async function handleSignIn(profile, email, password) {
   try {
     if (profile !== null) {
       console.log("A user is already signed in, try logging out first");
       return new Error("A user is already signed in, try logging out first");
     }
-    const snap = await getSnapOfDocs(firestore, "users", "email", "==", email);
+    const snap = await getSnapOfDocs("users", "email", "==", email);
     if (snap.empty) {
       console.log("Your account is not registered, please register yourself.");
       return new Error(
@@ -114,8 +103,6 @@ export async function handleSignIn(
 export async function handleSaveRegistrationData(
   profile,
   userData,
-  storage,
-  firestore,
   user,
   dispatch,
   getSingleUser,
@@ -128,7 +115,7 @@ export async function handleSaveRegistrationData(
     }
     let profilePicUrl = "";
     if (userData.profilePic !== "") {
-      profilePicUrl = await handleUploadImage(storage, userData.profilePic);
+      profilePicUrl = await handleUploadImage(userData.profilePic);
     }
     const data = {
       ...userData, //name, userName, profilepic, bio
@@ -153,7 +140,7 @@ export async function handleSaveRegistrationData(
 }
 
 // handle user sign out
-export async function hanldeSignOut(profile, firebaseAuth) {
+export async function hanldeSignOut(profile) {
   try {
     if (profile === null) {
       console.log("You are already signed out");
@@ -169,13 +156,12 @@ export async function hanldeSignOut(profile, firebaseAuth) {
 // handle auth state change function
 export async function handleAuthStateChange(
   data,
-  firestore,
   dispatch,
   getSingleUser,
   setUser
 ) {
   if (data) {
-    const docSnap = await getSingleDoc(firestore, "users", data.uid);
+    const docSnap = await getSingleDoc("users", data.uid);
     if (docSnap.exists()) {
       dispatch(getSingleUser(docSnap.data()));
       setUser(data);
