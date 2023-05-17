@@ -3,35 +3,38 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from ".";
-import { useFirebase } from "../firebase/firebase";
-
+import { useFirebase } from "../firebase";
 
 const EnterDetails = () => {
   const [userFullName, setUserFullName] = useState("");
   const [userName, setUserName] = useState("");
   const [userBio, setUserBio] = useState("");
-  const [userProfileImage, setUserProfileImage] = useState(null);
+  const [userProfileImage, setUserProfileImage] = useState("");
   const firebase = useFirebase();
 
-    const handleNameChange = (e) => {
-      setUserName(e.target.value);
-    };
-    const handleFullNameChange = (e) => {
-      setUserFullName(e.target.value);
-    };
-    const handleBioChange = (e) => {
-      setUserBio(e.target.value);
-    };
-    const handleImageChange = (e) => {
-      const file = e.target.files[0];
-       setUserProfileImage(file);
-      setUserProfileImage(file);
-    };
-
+  const handleNameChange = (e) => {
+    setUserName(e.target.value);
+  };
+  const handleFullNameChange = (e) => {
+    setUserFullName(e.target.value);
+  };
+  const handleBioChange = (e) => {
+    setUserBio(e.target.value);
+  };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setUserProfileImage(file);
+  };
 
   const handleClick = async () => {
+    firebase.saveUserDataOnRegistration({
+      userName: userName,
+      name: userFullName,
+      bio: userBio,
+      profilePic: userProfileImage,
+    });
     console.log(userName, userFullName, userBio);
-  }
+  };
 
   return (
     <div className="h-screen bg-my-light dark:bg-my-dark flex flex-col items-center ">

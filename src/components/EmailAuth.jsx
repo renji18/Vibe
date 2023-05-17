@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from ".";
-import { useFirebase } from "../firebase/firebase";
+import { useFirebase } from "../firebase";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const PasswordInput = ({
@@ -44,18 +44,19 @@ const Email = ({ title, text, linkTo }) => {
     setShowPassword(!showPassword);
   };
 
-    const handleEmailChange = (e) => {
-      setEmail(e.target.value);
-    };
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
 
-    const handlePasswordChange = (e) => {
-      setPassword(e.target.value);
-    };
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
 
   const handleClick = async () => {
-    //  await firebase.signinUser(email, password);
-    console.log(email, password);
-  }
+    title === "SIGN IN"
+      ? firebase.signInUserUsingEmailAndPassword(email, password)
+      : firebase.signUpUserUsingEmailAndPassword(email, password);
+  };
 
   return (
     <div className="h-full flex flex-col justify-center w-1/4 lgm:w-1/3 md:w-2/5 sm:w-4/5">

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Login, Register } from "./pages";
+import { Home, Login, Register } from "./pages";
 import { EnterDetails, Mode } from "./components";
+import { useSelector } from "react-redux";
 
 function App() {
     const [isDark, setIsDark] = useState(true);
     const [userTheme, setUserTheme] = useState("dark");
+
+    const {profile} = useSelector(state => state.userData)
+    console.log(profile.email);
 
     useEffect(() => {
       const themeSet = () => {
@@ -33,7 +37,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/" element={!profile ? <Login /> : <Home />} />
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/enterDetails" element={<EnterDetails />} />
       </Routes>
