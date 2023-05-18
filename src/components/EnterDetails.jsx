@@ -5,7 +5,6 @@ import { Button, Mode } from ".";
 import { useFirebase } from "../firebase";
 import { FaUser } from "react-icons/fa";
 
-
 const EnterDetails = ({ themeSwitch }) => {
   const [userFullName, setUserFullName] = useState("");
   const [userName, setUserName] = useState("");
@@ -16,6 +15,7 @@ const EnterDetails = ({ themeSwitch }) => {
   const firebase = useFirebase();
 
   const imgFile = useRef(null);
+  const [userProfileImageUrl, setUserProfileImageUrl] = useState("");
 
   const NAME = /^(?!\s)(?![\s\S]*\s$)[A-Za-z0-9 ]+$/;
   const USERNAME = /^\S*$/;
@@ -35,20 +35,18 @@ const EnterDetails = ({ themeSwitch }) => {
   };
 
   const handleImageChange = (e) => {
-    console.log(e);
     const file = e.target.files[0];
-    console.log(file);
-    setUserProfileImage(URL.createObjectURL(file));
+    setUserProfileImage(file);
+    setUserProfileImageUrl(URL.createObjectURL(file));
   };
 
   const handleUploadImg = () => {
     imgFile.current.click();
-  }
+  };
 
   const handleRemoveImg = () => {
     setUserProfileImage("");
-    document.getElementById('inputImg').value =""
-     console.log(userProfileImage);
+    document.getElementById("inputImg").value = "";
   };
 
   const handleClick = async () => {
@@ -77,7 +75,6 @@ const EnterDetails = ({ themeSwitch }) => {
         bio: userBio,
         profilePic: userProfileImage,
       });
-      console.log(userName, userFullName, userBio);
     }
   };
 
@@ -100,28 +97,26 @@ const EnterDetails = ({ themeSwitch }) => {
             {userProfileImage ? (
               <img
                 onClick={handleUploadImg}
-                src={userProfileImage}
+                src={userProfileImageUrl}
                 alt="profile"
                 className="w-[90px] h-[90px] rounded-full cursor-pointer"
               />
             ) : (
               <FaUser
-              title="Upload Image"
-                onClick={() => {handleUploadImg()
-                  console.log(3)
-                }}
+                title="Upload Image"
+                onClick={handleUploadImg}
                 size={90}
                 className="filter invert cursor-pointer text-my-light dark:text-my-dark"
               />
             )}
-            {userProfileImage &&
+            {userProfileImage && (
               <p
                 className="text-red-500 mt-1 cursor-pointer font-semibold"
                 onClick={handleRemoveImg}
               >
                 Remove Image
               </p>
-              }
+            )}
           </div>
           <div>
             <input
