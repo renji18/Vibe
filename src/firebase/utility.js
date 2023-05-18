@@ -16,52 +16,63 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import imageCompression from "browser-image-compression";
 import { firebaseAuth, firestore, storage } from "./config";
+import { toast } from "react-toastify";
+import { errorHandler } from "./authErrors";
+import { getSingleUser } from "../redux/actions";
 
 // returns url for a provided image file
 export async function handleUploadImage(file) {
-  const compressImage = await imageCompression(file, {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 1920,
-    useWebWorker: true,
-    maxIteration: 10,
-    fileType: "image/*",
-  });
-  const imgRef = ref(storage, `users/profilePic/${Date.now()}-${file}`);
-  const upload = await uploadBytes(imgRef, compressImage);
-  const res = await getDownloadURL(upload.ref);
-  return res;
+  try {
+    const compressImage = await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+      maxIteration: 10,
+      fileType: "image/*",
+    });
+    const imgRef = ref(storage, `users/profilePic/${Date.now()}-${file}`);
+    const upload = await uploadBytes(imgRef, compressImage);
+    const res = await getDownloadURL(upload.ref);
+    return res;
+  } catch (error) {
+    errorHandler(error);
+  }
 }
 
 // returns snap array of any operation in a document
 export async function getSnapOfDocs(coll, key, operation, value) {
-  const ref = collection(firestore, coll);
-  const q = query(ref, where(key, operation, value));
-  const snap = await getDocs(q);
-  return snap;
+  try {
+    const ref = collection(firestore, coll);
+    const q = query(ref, where(key, operation, value));
+    const snap = await getDocs(q);
+    return snap;
+  } catch (error) {
+    errorHandler(error);
+  }
 }
 
 // returns instance of a single document
 export async function getSingleDoc(coll, id) {
-  const docRef = doc(firestore, coll, id);
-  const docSnap = await getDoc(docRef);
-  return docSnap;
+  try {
+    const docRef = doc(firestore, coll, id);
+    const docSnap = await getDoc(docRef);
+    return docSnap;
+  } catch (error) {
+    errorHandler(error);
+  }
 }
 
 // handle user registration
 export async function handleRegistration(profile, email, password) {
   try {
     if (profile !== null) {
-      console.log(
-        "A user is already signed in, try logging out before signing up a new user"
-      );
-      return new Error(
+      return toast.info(
         "A user is already signed in, try logging out before signing up a new user"
       );
     }
     const snap = await getSnapOfDocs("users", "email", "==", email);
     if (!snap.empty) {
-      console.log("Your account is already registered, please try logging in.");
-      return new Error(
+      return toast.info(
         "Your account is already registered, please try logging in."
       );
     }
@@ -74,8 +85,9 @@ export async function handleRegistration(profile, email, password) {
       email,
       uid: res.user.uid,
     });
+    toast.success("Account registered successfully.");
   } catch (error) {
-    console.log(error);
+    return errorHandler(error);
   }
 }
 
@@ -83,19 +95,17 @@ export async function handleRegistration(profile, email, password) {
 export async function handleSignIn(profile, email, password) {
   try {
     if (profile !== null) {
-      console.log("A user is already signed in, try logging out first");
-      return new Error("A user is already signed in, try logging out first");
+      return toast.info("A user is already signed in, try logging out first");
     }
     const snap = await getSnapOfDocs("users", "email", "==", email);
     if (snap.empty) {
-      console.log("Your account is not registered, please register yourself.");
-      return new Error(
+      return toast.warn(
         "Your account is not registered, please register yourself."
       );
     }
     await signInWithEmailAndPassword(firebaseAuth, email, password);
   } catch (error) {
-    console.log(error);
+    return errorHandler(error);
   }
 }
 
@@ -105,13 +115,11 @@ export async function handleSaveRegistrationData(
   userData,
   user,
   dispatch,
-  getSingleUser,
   setUser
 ) {
   try {
     if (profile === null) {
-      console.log("Please log in first.");
-      return new Error("Please log in first.");
+      return toast.warn("Please login first");
     }
     let profilePicUrl = "";
     if (userData.profilePic !== "") {
@@ -134,8 +142,9 @@ export async function handleSaveRegistrationData(
     const docSnap = await getDoc(userRef);
     dispatch(getSingleUser(docSnap.data()));
     setUser(data);
+    toast.success("Profile created successfully.");
   } catch (error) {
-    console.log(error);
+    return errorHandler(error);
   }
 }
 
@@ -148,28 +157,29 @@ export async function hanldeSignOut(profile) {
     } else {
       await signOut(firebaseAuth);
     }
+    toast.success("Signed out successfully.");
   } catch (error) {
-    console.log(error);
+    return errorHandler(error);
   }
 }
 
 // handle auth state change function
-export async function handleAuthStateChange(
-  data,
-  dispatch,
-  getSingleUser,
-  setUser
-) {
-  if (data) {
-    const docSnap = await getSingleDoc("users", data.uid);
-    if (docSnap.exists()) {
-      dispatch(getSingleUser(docSnap.data()));
-      setUser(data);
+export async function handleAuthStateChange(data, dispatch, setUser) {
+  try {
+    if (data) {
+      const docSnap = await getSingleDoc("users", data.uid);
+      if (docSnap.exists()) {
+        dispatch(getSingleUser(docSnap.data()));
+        setUser(data);
+        toast.success("Login successful.");
+      } else {
+        toast.info("Your are logged out.");
+      }
     } else {
-      return new Error("No user with the provided uid");
+      dispatch(getSingleUser(null));
+      setUser(null);
     }
-  } else {
-    dispatch(getSingleUser(null));
-    setUser(null);
+  } catch (error) {
+    return errorHandler(error);
   }
 }

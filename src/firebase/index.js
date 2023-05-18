@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleAuthStateChange } from "./utility";
 import { firebaseAuth } from "./config";
 import {
-  getSingleUser,
   registerLoginSignOutUser,
   saveUserData,
 } from "../redux/actions";
@@ -24,7 +23,7 @@ export const FirebaseProvider = (props) => {
   // useEffect to catch logins, registrations and logouts
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, async (data) =>
-      handleAuthStateChange(data, dispatch, getSingleUser, setUser)
+      handleAuthStateChange(data, dispatch,  setUser)
     );
   }, [dispatch]);
 
@@ -41,7 +40,7 @@ export const FirebaseProvider = (props) => {
   // saving user data on registration
   const saveUserDataOnRegistration = async (userData) => {
     dispatch(
-      saveUserData(profile, userData, user, dispatch, getSingleUser, setUser)
+      saveUserData(profile, userData, user, dispatch, setUser)
     );
   };
 
