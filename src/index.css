@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.Toastify__close-button.Toastify__close-button--colored {
+  color: #333333 !important;
+}
