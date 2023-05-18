@@ -93,7 +93,7 @@ export async function handleSignIn(profile, email, password) {
         "Your account is not registered, please register yourself."
       );
     }
-    signInWithEmailAndPassword(firebaseAuth, email, password);
+    await signInWithEmailAndPassword(firebaseAuth, email, password);
   } catch (error) {
     console.log(error);
   }
