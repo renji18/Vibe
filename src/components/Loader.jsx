@@ -3,7 +3,7 @@ import { LOADER } from "../assets";
 
 const Loader = () => {
   return (
-    <div className="fixed inset-0 z-10 h-screen bg-my-dark flex items-center justify-center flex-col">
+    <div className="fixed inset-0 z-10 h-screen bg-my-light dark:bg-my-dark flex items-center justify-center flex-col">
       <img
         src={LOADER}
         alt="loader"
