@@ -3,12 +3,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home, Login, Register } from "./pages";
 import { EnterDetails, Mode } from "./components";
 import { useSelector } from "react-redux";
+import Loader from "./components/Loader";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
   const [userTheme, setUserTheme] = useState("dark");
 
   const { profile } = useSelector((state) => state.userData);
+  const { siteLoader, firebaseLoader } = useSelector((state) => state.loader);
 
   useEffect(() => {
     const themeSet = () => {
@@ -40,14 +42,24 @@ function App() {
           exact
           path="/"
           element={
-            !profile ? <Login /> : !profile?.name ? <EnterDetails /> : <Home />
+            siteLoader || firebaseLoader ? (
+              <Loader />
+            ) : !profile ? (
+              <Login />
+            ) : !profile?.name ? (
+              <EnterDetails />
+            ) : (
+              <Home />
+            )
           }
         />
         <Route
           exact
           path="/register"
           element={
-            !profile ? (
+            siteLoader || firebaseLoader ? (
+              <Loader />
+            ) : !profile ? (
               <Register />
             ) : !profile?.name ? (
               <EnterDetails />
@@ -56,6 +68,13 @@ function App() {
             )
           }
         />
+        {/* <Route
+          exact
+          path="/loader"
+          element={
+            <Loader />
+          }
+        /> */}
       </Routes>
       <Mode themeSwitch={themeSwitch} />
     </BrowserRouter>

@@ -8,6 +8,6 @@ export const userData = (state = {}, action) => {
       };
 
     default:
-      return { ...state };
+      return state;
   }
 };
