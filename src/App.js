@@ -37,6 +37,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={!profile ? <Login /> : !profile?.name ? <EnterDetails /> : <Home />} />
+        <Route exact path="/" element={<EnterDetails />} />
         <Route exact path="/register" element={!profile ? <Register /> : !profile?.name ? <EnterDetails /> : <Home />} />
       </Routes>
       <Mode themeSwitch={themeSwitch} />
