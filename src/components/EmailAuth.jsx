@@ -100,10 +100,16 @@ const handleClick = async () => {
   if (!password) {
     setPasswordError("Password is required");
     isValid = false;
-  } else if (!validatePassword(password)) {
-    setPasswordError("Invalid password");
+  }else if(password.length < 8) {
+    setPasswordError("Password must be atleast 8 characters long");
     isValid = false;
-  }
+  }else if(password.length > 15) {
+    setPasswordError("Password must be a maximum of 15 characters long");
+    isValid = false;
+  }else if (!validatePassword(password)) {
+    setPasswordError("Password must include lowercase, uppercase, special character, and number.");
+    isValid = false;
+   }
 
   if (title === "SIGN UP") {
     if (!confirmPassword) {
@@ -113,7 +119,7 @@ const handleClick = async () => {
       setConfirmPasswordError("Passwords do not match");
       isValid = false;
     }
-  }
+  }  
 
   if (isValid) {
     title === "SIGN IN"
@@ -129,46 +135,61 @@ const handleClick = async () => {
          {title}
        </h1>
        <div className="space-y-4 w-full">
-         <input
-           className={`dark:bg-my-black-1 bg-my-light border ${
-             emailError
-               ? "border-red-500"
-               : "dark:border-my-black-1 border-my-gray-2"
-           }  w-full outline-none font-poppins dark:text-my-light text-my-gray-2 text-base mt-4 px-4 py-3`}
-           placeholder="Email"
-           value={email}
-           onChange={handleEmailChange}
-         />
-         {emailError && <p className="-mt-2 text-red-500 text-sm">{emailError}</p>}
-         <PasswordInput
-           visible={showPassword}
-           toggleVisibility={togglePassword}
-           placeholder="Password"
-           value={password}
-           onChange={handlePasswordChange}
-           classStyles={
-             passwordError
-               ? "border-red-500"
-               : "dark:border-my-black-1 border-my-gray-2"
-           }
-         />
-         {passwordError && (
-           <p className="-mt-2 text-red-500 text-sm">{passwordError}</p>
-         )}
-         {title === "SIGN UP" && (
-           <>
-             <PasswordInput
-               visible={showPassword}
-               toggleVisibility={togglePassword}
-               placeholder="Confirm Password"
-               value={confirmPassword}
-               onChange={handleConfirmPasswordChange}
-             />
-             {confirmPasswordError && (
-               <p className="text-red-500 text-sm">{confirmPasswordError}</p>
-             )}
-           </>
-         )}
+         <div>
+           <input
+             className={`dark:bg-my-black-1 bg-my-light border ${
+               emailError
+                 ? "border-red-500"
+                 : "dark:border-my-black-1 border-my-gray-2"
+             }  w-full outline-none font-poppins dark:text-my-light text-my-gray-2 text-base mt-4 px-4 py-3`}
+             placeholder="Email"
+             value={email}
+             onChange={handleEmailChange}
+           />
+           {emailError && (
+             <p className="mt-1 text-red-500 text-sm">{emailError}</p>
+           )}
+         </div>
+         <div>
+           <PasswordInput
+             visible={showPassword}
+             toggleVisibility={togglePassword}
+             placeholder="Password"
+             value={password}
+             onChange={handlePasswordChange}
+             classStyles={
+               passwordError
+                 ? "border-red-500"
+                 : "dark:border-my-black-1 border-my-gray-2"
+             }
+           />
+           {passwordError && (
+             <p className="mt-1 text-red-500 text-sm">{passwordError}</p>
+           )}
+         </div>
+         <div>
+           {title === "SIGN UP" && (
+             <>
+               <PasswordInput
+                 visible={showPassword}
+                 toggleVisibility={togglePassword}
+                 placeholder="Confirm Password"
+                 value={confirmPassword}
+                 onChange={handleConfirmPasswordChange}
+                 classStyles={
+                   passwordError
+                     ? "border-red-500"
+                     : "dark:border-my-black-1 border-my-gray-2"
+                 }
+               />
+               {confirmPasswordError && (
+                 <p className="mt-1 text-red-500 text-sm">
+                   {confirmPasswordError}
+                 </p>
+               )}
+             </>
+           )}
+         </div>
        </div>
        {title === "SIGN IN" && (
          <Link to="/" className="text-xs text-end mt-1 -mb-4 text-my-gray-2">
@@ -177,7 +198,7 @@ const handleClick = async () => {
        )}
        <Button
          btnName={`${title.toUpperCase()} WITH EMAIL`}
-         classStyles="mt-8 text-base"
+         classStyles="mt-8 text-base md:text-sm"
          handleClick={handleClick}
        />
        <Link

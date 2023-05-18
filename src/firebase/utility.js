@@ -152,8 +152,7 @@ export async function handleSaveRegistrationData(
 export async function hanldeSignOut(profile) {
   try {
     if (profile === null) {
-      console.log("You are already signed out");
-      return new Error("You are already signed out");
+      return toast.warn("You are already signed out");
     } else {
       await signOut(firebaseAuth);
     }
@@ -171,7 +170,7 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
       if (docSnap.exists()) {
         dispatch(getSingleUser(docSnap.data()));
         setUser(data);
-        toast.success("Login successful.");
+        // toast.success("Login successful.");
       } else {
         toast.info("Your are logged out.");
       }
