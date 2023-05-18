@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Email } from "../components";
+import { Email, Mode } from "../components";
 
-const Login = () => {
+const Login = ({ themeSwitch }) => {
 
   return (
     <div className="h-screen bg-my-light dark:bg-my-dark flex flex-col items-center ">
@@ -11,6 +11,7 @@ const Login = () => {
         text="NEW USER? SIGN UP"
         linkTo="/register"
       />
+      <Mode themeSwitch={themeSwitch} />
     </div>
   );
 };

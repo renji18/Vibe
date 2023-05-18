@@ -11,7 +11,7 @@ const Mode = ({ themeSwitch }) => {
   };
 
   return (
-    <div className="absolute right-5 bottom-5">
+    <div className="absolute right-5 bottom-5 cursor-pointer">
       <div
         className={`circle-mode-switch flex items-center justify-center overflow-hidden"
         }`}

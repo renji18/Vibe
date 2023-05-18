@@ -45,6 +45,7 @@ function App() {
         theme="colored"
         newestOnTop
         draggable={false}
+        toastStyle={{ color: "#333333" }}
       />
       <BrowserRouter>
         <Routes>
@@ -55,9 +56,9 @@ function App() {
               siteLoader || firebaseLoader ? (
                 <Loader />
               ) : !profile ? (
-                <Login />
+                <Login themeSwitch={themeSwitch} />
               ) : !profile?.name ? (
-                <EnterDetails />
+                <EnterDetails themeSwitch={themeSwitch} />
               ) : (
                 <Home />
               )
@@ -70,16 +71,15 @@ function App() {
               siteLoader || firebaseLoader ? (
                 <Loader />
               ) : !profile ? (
-                <Register />
+                <Register themeSwitch={themeSwitch} />
               ) : !profile?.name ? (
-                <EnterDetails />
+                <EnterDetails themeSwitch={themeSwitch} />
               ) : (
                 <Home />
               )
             }
           />
         </Routes>
-        <Mode themeSwitch={themeSwitch} />
       </BrowserRouter>
     </>
   );
