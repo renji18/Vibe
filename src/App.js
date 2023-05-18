@@ -68,13 +68,6 @@ function App() {
             )
           }
         />
-        {/* <Route
-          exact
-          path="/loader"
-          element={
-            <Loader />
-          }
-        /> */}
       </Routes>
       <Mode themeSwitch={themeSwitch} />
     </BrowserRouter>
