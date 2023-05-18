@@ -4,6 +4,8 @@ import { Home, Login, Register } from "./pages";
 import { EnterDetails, Mode } from "./components";
 import { useSelector } from "react-redux";
 import Loader from "./components/Loader";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -35,42 +37,51 @@ function App() {
     setIsDark(true);
     localStorage.setItem("theme", "dark");
   };
+  console.log(siteLoader, firebaseLoader, !profile);
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          exact
-          path="/"
-          element={
-            siteLoader || firebaseLoader ? (
-              <Loader />
-            ) : !profile ? (
-              <Login />
-            ) : !profile?.name ? (
-              <EnterDetails />
-            ) : (
-              <Home />
-            )
-          }
-        />
-        <Route
-          exact
-          path="/register"
-          element={
-            siteLoader || firebaseLoader ? (
-              <Loader />
-            ) : !profile ? (
-              <Register />
-            ) : !profile?.name ? (
-              <EnterDetails />
-            ) : (
-              <Home />
-            )
-          }
-        />
-      </Routes>
-      <Mode themeSwitch={themeSwitch} />
-    </BrowserRouter>
+    <>
+      <ToastContainer
+        hideProgressBar
+        theme="colored"
+        newestOnTop
+        draggable={false}
+      />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              siteLoader || firebaseLoader ? (
+                <Loader />
+              ) : !profile ? (
+                <Login />
+              ) : !profile?.name ? (
+                <EnterDetails />
+              ) : (
+                <Home />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/register"
+            element={
+              siteLoader || firebaseLoader ? (
+                <Loader />
+              ) : !profile ? (
+                <Register />
+              ) : !profile?.name ? (
+                <EnterDetails />
+              ) : (
+                <Home />
+              )
+            }
+          />
+        </Routes>
+        <Mode themeSwitch={themeSwitch} />
+      </BrowserRouter>
+    </>
   );
 }
 

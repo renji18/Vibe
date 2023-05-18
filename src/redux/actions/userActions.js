@@ -35,7 +35,6 @@ export const saveUserData = (
   userData,
   user,
   dispatch,
-  getSingleUser,
   setUser
 ) => ({
   type: actionType.SAVE_USER_DATA,
@@ -43,6 +42,5 @@ export const saveUserData = (
   userData,
   user,
   dispatch,
-  getSingleUser,
   setUser,
 });

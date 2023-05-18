@@ -4,6 +4,9 @@ import {
   registerLoginSignOutSagaAsyncHandler,
   saveUserDataSagaAsyncHandler,
 } from "./services";
+import { toast } from "react-toastify";
+
+//.success, info, error, warn
 
 // Simple main api loader
 export function* mainLoaderSagaCall(action) {
@@ -14,16 +17,16 @@ export function* mainLoaderSagaCall(action) {
 export function* registerLoginSignOutSagaCall(action) {
   try {
     yield put(actionCreators.toggleFirebaseLoader(true));
-    const res = yield registerLoginSignOutSagaAsyncHandler(
+    yield registerLoginSignOutSagaAsyncHandler(
       action.method,
       action.profile,
       action.email,
       action.password
     );
     yield put(actionCreators.toggleFirebaseLoader(false));
-    if (res) return console.log("error: ", res);
   } catch (error) {
-    yield console.log(error);
+    yield put(actionCreators.toggleFirebaseLoader(false));
+    toast.error(error);
   }
 }
 
@@ -31,17 +34,16 @@ export function* registerLoginSignOutSagaCall(action) {
 export function* saveUserDataSagaCall(action) {
   try {
     yield put(actionCreators.toggleFirebaseLoader(true));
-    const res = yield saveUserDataSagaAsyncHandler(
+    yield saveUserDataSagaAsyncHandler(
       action.profile,
       action.userData,
       action.user,
       action.dispatch,
-      action.getSingleUser,
       action.setUser
     );
     yield put(actionCreators.toggleFirebaseLoader(false));
-    if (res) return console.log("error: ", res);
   } catch (error) {
-    yield console.log(error);
+    yield put(actionCreators.toggleFirebaseLoader(false));
+    toast.error(error);
   }
 }

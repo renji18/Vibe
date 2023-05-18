@@ -32,7 +32,6 @@ export async function saveUserDataSagaAsyncHandler(
   userData,
   user,
   dispatch,
-  getSingleUser,
   setUser
 ) {
   const res = await handleSaveRegistrationData(
@@ -40,7 +39,6 @@ export async function saveUserDataSagaAsyncHandler(
     userData,
     user,
     dispatch,
-    getSingleUser,
     setUser
   );
   return res;
