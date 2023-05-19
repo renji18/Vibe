@@ -1,4 +1,5 @@
 import {
+  handleCreateUserPost,
   handleRegistration,
   handleSaveRegistrationData,
   handleSignIn,
@@ -10,13 +11,14 @@ export async function registerLoginSignOutSagaAsyncHandler(
   method,
   profile,
   email,
-  password
+  password,
+  dispatch
 ) {
   if (method === "register") {
     const res = await handleRegistration(profile, email, password);
     return res;
   } else if (method === "login") {
-    const res = await handleSignIn(profile, email, password);
+    const res = await handleSignIn(dispatch, profile, email, password);
     return res;
   } else if (method === "signout") {
     const res = await hanldeSignOut(profile);
@@ -41,5 +43,11 @@ export async function saveUserDataSagaAsyncHandler(
     dispatch,
     setUser
   );
+  return res;
+}
+
+// create user post handler
+export async function createUserPostSagaAsyncHandler(dispatch, profile, postData) {
+  const res = await handleCreateUserPost(dispatch, profile, postData);
   return res;
 }

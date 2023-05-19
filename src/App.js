@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Loader from "./components/Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CreatePost from "./components/CreatePost";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -37,7 +38,6 @@ function App() {
     setIsDark(true);
     localStorage.setItem("theme", "dark");
   };
-  console.log(siteLoader, firebaseLoader, !profile);
   return (
     <>
       <ToastContainer
@@ -47,6 +47,7 @@ function App() {
         draggable={false}
         toastStyle={{ color: "#333333" }}
       />
+      <CreatePost />
       <BrowserRouter>
         <Routes>
           <Route

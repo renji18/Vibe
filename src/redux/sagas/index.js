@@ -15,4 +15,8 @@ export default function* mySaga() {
     actionTypes.SAVE_USER_DATA,
     userMiddleware.saveUserDataSagaCall
   );
+  yield takeLatest(
+    actionTypes.CREATE_POST,
+    userMiddleware.createUserPostSagaCall
+  );
 }

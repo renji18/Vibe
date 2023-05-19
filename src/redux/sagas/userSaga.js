@@ -3,6 +3,7 @@ import * as actionCreators from "../actions";
 import {
   registerLoginSignOutSagaAsyncHandler,
   saveUserDataSagaAsyncHandler,
+  createUserPostSagaAsyncHandler,
 } from "./services";
 import { toast } from "react-toastify";
 
@@ -21,7 +22,8 @@ export function* registerLoginSignOutSagaCall(action) {
       action.method,
       action.profile,
       action.email,
-      action.password
+      action.password,
+      action.dispatch
     );
     yield put(actionCreators.toggleFirebaseLoader(false));
   } catch (error) {
@@ -44,6 +46,18 @@ export function* saveUserDataSagaCall(action) {
     yield put(actionCreators.toggleFirebaseLoader(false));
   } catch (error) {
     yield put(actionCreators.toggleFirebaseLoader(false));
+    toast.error(error);
+  }
+}
+
+// create user post saga
+export function* createUserPostSagaCall(action) {
+  try {
+    // yield put(actionCreators.toggleFirebaseLoader(true));
+    yield createUserPostSagaAsyncHandler(action.dispatch, action.profile, action.postData);
+    // yield put(actionCreators.toggleFirebaseLoader(false));
+  } catch (error) {
+    // yield put(actionCreators.toggleFirebaseLoader(false));
     toast.error(error);
   }
 }
