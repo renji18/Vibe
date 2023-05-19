@@ -3,11 +3,9 @@ import * as actionCreators from "../actions";
 import {
   registerLoginSignOutSagaAsyncHandler,
   saveUserDataSagaAsyncHandler,
-  createUserPostSagaAsyncHandler,
 } from "./services";
 import { toast } from "react-toastify";
 
-//.success, info, error, warn
 
 // Simple main api loader
 export function* mainLoaderSagaCall(action) {
@@ -50,14 +48,4 @@ export function* saveUserDataSagaCall(action) {
   }
 }
 
-// create user post saga
-export function* createUserPostSagaCall(action) {
-  try {
-    // yield put(actionCreators.toggleFirebaseLoader(true));
-    yield createUserPostSagaAsyncHandler(action.dispatch, action.profile, action.postData);
-    // yield put(actionCreators.toggleFirebaseLoader(false));
-  } catch (error) {
-    // yield put(actionCreators.toggleFirebaseLoader(false));
-    toast.error(error);
-  }
-}
+
