@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from ".";
-import { useFirebase } from "../firebase";
+import { Button } from "..";
+import { useFirebase } from "../../firebase";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const PasswordInput = ({
@@ -34,7 +34,7 @@ const PasswordInput = ({
   );
 };
 
-const Email = ({ title, text, linkTo }) => {
+const EmailAuth = ({ title, text, linkTo }) => {
    const [showPassword, setShowPassword] = useState(false);
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
@@ -47,10 +47,7 @@ const Email = ({ title, text, linkTo }) => {
 const EMAIL =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PASSWORD =
-  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-// const NAME = /^(?!\s)(?![\s\S]*\s$)[A-Za-z0-9 ]+$/;
-// const USERNAME = /^\S*$/;
-// const NO_SPECIAL_CHARACTER = /^([A-Za-z])+[^*|\":<>[\]{}`\\()';@&$]+$/;
+  /^(?=.*\d)(?=.*[a-z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 
 const validateEmail = (email) => {
   return EMAIL.test(email);
@@ -103,11 +100,8 @@ const handleClick = async () => {
   }else if(password.length < 8) {
     setPasswordError("Password must be atleast 8 characters long");
     isValid = false;
-  }else if(password.length > 15) {
-    setPasswordError("Password must be a maximum of 15 characters long");
-    isValid = false;
   }else if (!validatePassword(password)) {
-    setPasswordError("Password must include lowercase, uppercase, special character, and number.");
+    setPasswordError("Password must include letter, special character, and number.");
     isValid = false;
    }
 
@@ -217,4 +211,4 @@ const handleClick = async () => {
 };
 
 
-export default Email;
+export default EmailAuth;

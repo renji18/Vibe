@@ -1,8 +1,8 @@
 // For Login and Register
 
 import React, { useState, useRef } from "react";
-import { Button, Mode } from ".";
-import { useFirebase } from "../firebase";
+import { Button, Mode } from "..";
+import { useFirebase } from "../../firebase";
 import { FaUser } from "react-icons/fa";
 
 const EnterDetails = ({ themeSwitch }) => {
@@ -99,7 +99,7 @@ const EnterDetails = ({ themeSwitch }) => {
                 onClick={handleUploadImg}
                 src={userProfileImageUrl}
                 alt="profile"
-                className="w-[90px] h-[90px] rounded-full cursor-pointer"
+                className="w-[90px] h-[90px] rounded-full cursor-pointer object-contain"
               />
             ) : (
               <FaUser
