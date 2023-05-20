@@ -72,6 +72,7 @@ const Sidebar = ({themeSwitch}) => {
                 title="Create"
               />
             </Link>
+          </div>
             <Link to="/">
               <div
                 title="Profile"
@@ -88,11 +89,10 @@ const Sidebar = ({themeSwitch}) => {
                 )}
               </div>
             </Link>
-          </div>
 
           <AiOutlineMenu
-            size={30}
-            className="filter invert cursor-pointer"
+            size={30} 
+            className="filter mt-5 invert cursor-pointer"
             title="More"
             onClick={menuHandler}
             />
