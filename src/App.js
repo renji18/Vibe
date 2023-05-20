@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home, Login, Register } from "./pages";
-import { EnterDetails, Mode } from "./components";
+import { EnterDetails, Loader } from "./components";
 import { useSelector } from "react-redux";
-import Loader from "./components/Loader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreatePost from "./components/CreatePost";
@@ -61,7 +60,7 @@ function App() {
               ) : !profile?.name ? (
                 <EnterDetails themeSwitch={themeSwitch} />
               ) : (
-                <Home />
+                <Home themeSwitch={themeSwitch} />
               )
             }
           />
@@ -76,7 +75,7 @@ function App() {
               ) : !profile?.name ? (
                 <EnterDetails themeSwitch={themeSwitch} />
               ) : (
-                <Home />
+                <Home themeSwitch={themeSwitch} />
               )
             }
           />

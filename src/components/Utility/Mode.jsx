@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaMoon } from "react-icons/fa";
 import { BsFillSunFill } from "react-icons/bs";
 
-const Mode = ({ themeSwitch }) => {
+const Mode = ({ themeSwitch, classStyles }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleMode = () => {
@@ -11,15 +11,13 @@ const Mode = ({ themeSwitch }) => {
   };
 
   return (
-    <div className="absolute right-5 bottom-5 cursor-pointer">
+    <div className={`${classStyles} cursor-pointer`}>
       <div
         className={`circle-mode-switch flex items-center justify-center overflow-hidden"
         }`}
       >
         <div
-          className={`circle ${
-            isDarkMode ? "bg-my-light" : "bg-my-dark"
-          } rounded-full w-10 h-10 flex items-center justify-center`}
+          className="circle  rounded-full w-10 h-10 flex items-center justify-center"
           onClick={toggleMode}
         >
           {isDarkMode ? (
