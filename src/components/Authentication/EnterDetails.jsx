@@ -4,8 +4,10 @@ import React, { useState, useRef } from "react";
 import { Button, Mode } from "..";
 import { useFirebase } from "../../firebase";
 import { FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const EnterDetails = ({ themeSwitch }) => {
+  const navigate = useNavigate();
   const [userFullName, setUserFullName] = useState("");
   const [userName, setUserName] = useState("");
   const [userBio, setUserBio] = useState("");
@@ -75,6 +77,7 @@ const EnterDetails = ({ themeSwitch }) => {
         bio: userBio,
         profilePic: userProfileImage,
       });
+      navigate("/");
     }
   };
 

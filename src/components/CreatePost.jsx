@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Button from "./Button";
+import {Button} from "../components";
 import { useFirebase } from "../firebase";
 import { toast } from "react-toastify";
 import { handleUserNameExist } from "../firebase/utility";
