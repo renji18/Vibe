@@ -1,10 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { handleAuthStateChange } from "./utility";
+import {
+  handleAuthStateChange,
+  handleGetUserNamesData,
+  handleUserNameExist,
+} from "./utility";
 import { firebaseAuth } from "./config";
 import {
   createUserPost,
+  getUserNamesData,
   registerLoginSignOutUser,
   saveUserData,
 } from "../redux/actions";
@@ -23,6 +28,7 @@ export const FirebaseProvider = (props) => {
 
   // useEffect to catch logins, registrations and logouts
   useEffect(() => {
+    handleGetUserNamesData(dispatch);
     onAuthStateChanged(firebaseAuth, async (data) =>
       handleAuthStateChange(data, dispatch, setUser)
     );

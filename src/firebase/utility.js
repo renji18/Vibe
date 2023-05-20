@@ -19,7 +19,7 @@ import imageCompression from "browser-image-compression";
 import { firebaseAuth, firestore, storage } from "./config";
 import { toast } from "react-toastify";
 import { errorHandler } from "./authErrors";
-import { getAllPosts, getSingleUser } from "../redux/actions";
+import { getAllPosts, getSingleUser, getUserNamesData } from "../redux/actions";
 
 // handle auth state change function
 export async function handleAuthStateChange(data, dispatch, setUser) {
@@ -64,6 +64,7 @@ async function stateUpdater(dispatch, uid) {
   let posts = [];
   gibberishPosts.forEach((post) => posts.push(post.data()));
   dispatch(getAllPosts(posts));
+  handleGetUserNamesData(dispatch);
   return;
 }
 
@@ -145,6 +146,7 @@ export async function handleRegistration(profile, email, password) {
     await setDoc(doc(firestore, "users", res.user.uid), {
       email,
       uid: res.user.uid,
+      loginAt: Date.now(),
     });
     toast.success("Account registered successfully.");
   } catch (error) {
@@ -167,7 +169,18 @@ export async function handleSignIn(dispatch, profile, email, password) {
     const res = await signInWithEmailAndPassword(firebaseAuth, email, password);
 
     const docSnap = await getSingleDoc("users", res.user.uid);
-    dispatch(getSingleUser(docSnap.data()));
+    const docSnapData = docSnap.data();
+    // const lastLoginMonth = new Date(docSnapData.loginAt);
+    // // 7 = 4
+    // if (lastLoginMonth.getMonth() + 3 < new Date(Date.now()).getMonth()){
+    //   const userRef = doc(firestore, "users", res.user.uid);
+    // await updateDoc(userRef, {
+    //   loginAt: Date.now()
+    // });
+    // hanldeSignOut(profile)
+    // toast.info("Session Expired. Login Again")
+    // }
+    dispatch(getSingleUser(docSnapData));
     toast.success("Logged in successfull.");
   } catch (error) {
     return errorHandler(error);
@@ -233,52 +246,109 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
     if (profile === null) {
       return toast.warn("Please login first");
     }
-    let url = [];
-    if (postData.userContent.length >= 1) {
-      if (postData.userContent[0].type === "image") {
-        url = [await handleUploadImage(postData.userContent[0].file)];
+    console.log(1);
+    let contentData = [];
+    if (postData.length >= 1) {
+      if (postData[0].type === "image") {
+        contentData = [
+          {
+            content: await handleUploadImage(postData[0].file),
+            type: "image",
+            desc: postData[0].desc,
+            likes: [],
+            comments: [],
+            individualPostId: 0,
+          },
+        ];
       } else {
-        url = [await handleUploadVideo(postData.userContent[0].file)];
+        contentData = [
+          {
+            content: await handleUploadVideo(postData[0].file),
+            type: "video",
+            desc: postData[0].desc,
+            likes: [],
+            comments: [],
+            individualPostId: 0,
+          },
+        ];
       }
     }
+    console.log(2);
     const data = {
       userId: profile.uid,
-      contentUrl: url,
-      description: postData.desc,
-      likes: [],
-      comments: [],
+      content: contentData,
       timeStamp: Date.now(),
     };
+    console.log(data);
     const res = await addDoc(collection(firestore, "posts"), data);
     toast.success("Post created successfully.");
     const userRef = doc(firestore, "users", profile.uid);
+    console.log(4);
     await updateDoc(userRef, {
       personalPosts: [...profile.personalPosts, res.id],
     });
+    console.log(5);
     const postRef = doc(firestore, "posts", res.id);
-    const postSnap = await getDoc(postRef);
-    const updatedPostData = postSnap.data();
-    if (postData.userContent.length > 1) {
-      for (let i = 1; i < postData.userContent.length; i++) {
-        let url;
-        if (postData.userContent[i].type === "image") {
-          url = await handleUploadImage(postData.userContent[i].file);
+    if (postData.length > 1) {
+      for (let i = 1; i < postData.length; i++) {
+        const postSnap = await getDoc(postRef);
+        const updatedPostData = postSnap.data();
+        let contentData;
+        console.log(6);
+        if (postData[i].type === "image") {
+          contentData = {
+            content: await handleUploadImage(postData[i].file),
+            type: "image",
+            desc: postData[i].desc,
+            likes: [],
+            comments: [],
+            individualPostId: i,
+          };
         } else {
-          url = await handleUploadVideo(postData.userContent[i].file);
+          contentData = {
+            content: await handleUploadVideo(postData[i].file),
+            type: "video",
+            desc: postData[i].desc,
+            likes: [],
+            comments: [],
+            individualPostId: i,
+          };
         }
+        console.log(7);
         await updateDoc(postRef, {
           postId: res.id,
-          contentUrl: [...updatedPostData.contentUrl, url],
+          content: [...updatedPostData.content, contentData],
         });
       }
     }
+    console.log(8);
     stateUpdater(dispatch, profile.uid);
-    console.log(res.id);
   } catch (error) {
     console.log(error);
     return errorHandler(error);
   }
 }
 
+// auto signout after 90days
 
-// username storing, auto signout after 90days
+// handle get usernames
+export async function handleGetUserNamesData(dispatch) {
+  const userNameRef = collection(firestore, "users");
+  const gibberishUsers = await getDocs(userNameRef);
+  let users = [];
+  gibberishUsers.forEach((user) => users.push(user.data()));
+  let userNames = [];
+  users.forEach((user) => {
+    user.userName && userNames.push(user.userName);
+  });
+  dispatch(getUserNamesData(userNames));
+}
+
+// handle userNameExist
+export async function handleUserNameExist(value, userNamesArray) {
+  let duplicateUsername = false;
+  userNamesArray.forEach((item) => {
+    if (item === value) return (duplicateUsername = true);
+  });
+  return duplicateUsername;
+}

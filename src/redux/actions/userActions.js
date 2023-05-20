@@ -21,7 +21,13 @@ export const toggleFirebaseLoader = (data) => ({
 });
 
 // Register and Login user
-export const registerLoginSignOutUser = (method, profile, email, password, dispatch) => ({
+export const registerLoginSignOutUser = (
+  method,
+  profile,
+  email,
+  password,
+  dispatch
+) => ({
   type: actionType.REGISTER_LOGIN_SIGNOUT_USER,
   method,
   profile,
@@ -38,4 +44,10 @@ export const saveUserData = (profile, userData, user, dispatch, setUser) => ({
   user,
   dispatch,
   setUser,
+});
+
+// Get user names
+export const getUserNamesData = (data) => ({
+  type: actionType.GET_USER_NAMES,
+  data,
 });

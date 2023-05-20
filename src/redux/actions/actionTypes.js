@@ -4,7 +4,9 @@ export const REGISTER_LOGIN_SIGNOUT_USER = "REGISTER_LOGIN_SIGNOUT_USER";
 
 export const SAVE_USER_DATA = "SAVE_USER_DATA";
 
-export const GET_POSTS = 'GET_POSTS'
+export const GET_USER_NAMES = "GET_USER_NAMES";
+
+export const GET_POSTS = "GET_POSTS";
 
 export const CREATE_POST = "CREATE_POST";
 
