@@ -16,13 +16,9 @@ function App() {
   const [isOnline, setIsOnline] = useState(true);
 
   const { profile } = useSelector((state) => state.userData);
-  const { siteLoader, firebaseLoader, networkReloadStatus } = useSelector(
+  const { siteLoader, firebaseLoader } = useSelector(
     (state) => state.loader
   );
-
-  useEffect(() => {
-    networkReloadStatus === false && toast.info("Welcome Back.");
-  }, [networkReloadStatus]);
 
   useEffect(() => {
     const themeSet = () => {
@@ -41,15 +37,13 @@ function App() {
         "internetTesterToCheckIfNetIsConnectedOrNot"
       );
       if (res) {
-        dispatch(networkReloadHandler(false));
         setIsOnline(true);
       } else {
-        dispatch(networkReloadHandler(true));
         setIsOnline(false);
       }
     };
     firstNetworkTest();
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     const testNetwork = async () => {
@@ -58,10 +52,8 @@ function App() {
         "internetTesterToCheckIfNetIsConnectedOrNot"
       );
       if (res) {
-        dispatch(networkReloadHandler(false));
         setIsOnline(true);
       } else {
-        dispatch(networkReloadHandler(true));
         setIsOnline(false);
       }
     };
@@ -69,7 +61,7 @@ function App() {
     return () => {
       clearInterval(testNetwork);
     };
-  }, [dispatch]);
+  }, []);
 
   const themeSwitch = () => {
     if (document.documentElement.classList.contains("dark")) {

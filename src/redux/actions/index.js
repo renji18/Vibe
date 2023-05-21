@@ -5,10 +5,6 @@ export {
   getUserNamesData,
 } from "./userActions";
 
-export {
-  toggleMainLoader,
-  toggleFirebaseLoader,
-  networkReloadHandler,
-} from "./miscellaneous";
+export { toggleMainLoader, toggleFirebaseLoader } from "./miscellaneous";
 
 export { createUserPost, getAllPosts } from "./postActions";

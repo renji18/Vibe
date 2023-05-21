@@ -11,9 +11,3 @@ export const toggleFirebaseLoader = (data) => ({
   type: actionType.FIREBASE_LOADER,
   data,
 });
-
-// online or not
-export const networkReloadHandler = (data) => ({
-  type: actionType.NETWORK_RELOAD_STATUS,
-  data,
-});

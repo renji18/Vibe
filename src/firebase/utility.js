@@ -162,7 +162,7 @@ export async function handleSignIn(dispatch, profile, email, password) {
     const res = await signInWithEmailAndPassword(firebaseAuth, email, password);
     const docSnap = await getSingleDoc("users", res.user.uid);
     dispatch(getSingleUser(docSnap.data()));
-    toast.success("Logged in successfull.");
+    toast.success("Logged in successfully.");
   } catch (error) {
     return errorHandler(error);
   }
@@ -267,7 +267,6 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
       personalPosts: [...profile.personalPosts, res.id],
     });
     const postRef = doc(firestore, "posts", res.id);
-    console.log(postData.postData.length);
     if (postData.postData.length > 1) {
       for (let i = 1; i < postData.postData.length; i++) {
         const postSnap = await getDoc(postRef);
@@ -310,7 +309,10 @@ export async function handleAutoSignOut(data) {
       loginAt: Date.now(),
     });
     await hanldeSignOut("forced signout");
-    toast.info("Session Expired.Login Again");
+    toast.info("Session Expired. Login Again");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
     return;
   }
 }

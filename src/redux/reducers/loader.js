@@ -17,11 +17,6 @@ const loader = (state = initialState, { type, data }) => {
         ...state,
         firebaseLoader: data,
       };
-    case actionType.NETWORK_RELOAD_STATUS:
-      return {
-        ...state,
-        networkReloadStatus: data,
-      };
     default:
       return state;
   }
