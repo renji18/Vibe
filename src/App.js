@@ -2,18 +2,27 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home, Login, NetworkError, Register } from "./pages";
 import { EnterDetails, Loader } from "./components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreatePost from "./components/CreatePost";
+import { getSingleDoc } from "./firebase/utility";
+import { networkReloadHandler } from "./redux/actions";
 
 function App() {
+  const dispatch = useDispatch();
   const [isDark, setIsDark] = useState(true);
   const [userTheme, setUserTheme] = useState("dark");
-  const [isOnline, setIsOnline] = useState(null);
+  const [isOnline, setIsOnline] = useState(true);
 
   const { profile } = useSelector((state) => state.userData);
-  const { siteLoader, firebaseLoader } = useSelector((state) => state.loader);
+  const { siteLoader, firebaseLoader, networkReloadStatus } = useSelector(
+    (state) => state.loader
+  );
+
+  useEffect(() => {
+    networkReloadStatus === false && toast.info("Welcome Back.");
+  }, [networkReloadStatus]);
 
   useEffect(() => {
     const themeSet = () => {
@@ -25,30 +34,42 @@ function App() {
     themeSet();
   }, []);
 
-  // check internet status
   useEffect(() => {
-    function detectInternet() {
-      if (navigator.onLine) {
+    const firstNetworkTest = async () => {
+      const res = await getSingleDoc(
+        "users",
+        "internetTesterToCheckIfNetIsConnectedOrNot"
+      );
+      if (res) {
+        dispatch(networkReloadHandler(false));
         setIsOnline(true);
-        toast.success("Logged in successfully.");
-        return;
       } else {
+        dispatch(networkReloadHandler(true));
         setIsOnline(false);
-        toast.warn("You are offline at the moment.");
-        return;
       }
-    }
-
-    window.addEventListener("load", detectInternet);
-    window.addEventListener("online", detectInternet);
-    window.addEventListener("offline", detectInternet);
-
-    return () => {
-      window.removeEventListener("load", detectInternet);
-      window.removeEventListener("online", detectInternet);
-      window.removeEventListener("offline", detectInternet);
     };
-  }, []);
+    firstNetworkTest();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const testNetwork = async () => {
+      const res = await getSingleDoc(
+        "users",
+        "internetTesterToCheckIfNetIsConnectedOrNot"
+      );
+      if (res) {
+        dispatch(networkReloadHandler(false));
+        setIsOnline(true);
+      } else {
+        dispatch(networkReloadHandler(true));
+        setIsOnline(false);
+      }
+    };
+    setInterval(testNetwork, 5000);
+    return () => {
+      clearInterval(testNetwork);
+    };
+  }, [dispatch]);
 
   const themeSwitch = () => {
     if (document.documentElement.classList.contains("dark")) {

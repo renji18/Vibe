@@ -27,6 +27,7 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
     if (data) {
       const docSnap = await getSingleDoc("users", data.uid);
       if (docSnap?.exists()) {
+        await handleAutoSignOut(docSnap.data());
         dispatch(getSingleUser(docSnap.data()));
         setUser(data);
         const postRef = collection(firestore, "posts");
@@ -159,20 +160,8 @@ export async function handleSignIn(dispatch, profile, email, password) {
       );
     }
     const res = await signInWithEmailAndPassword(firebaseAuth, email, password);
-
     const docSnap = await getSingleDoc("users", res.user.uid);
-    const docSnapData = docSnap.data();
-    // const lastLoginMonth = new Date(docSnapData.loginAt);
-    // // 7 = 4
-    // if (lastLoginMonth.getMonth() + 3 < new Date(Date.now()).getMonth()){
-    //   const userRef = doc(firestore, "users", res.user.uid);
-    // await updateDoc(userRef, {
-    //   loginAt: Date.now()
-    // });
-    // hanldeSignOut(profile)
-    // toast.info("Session Expired. Login Again")
-    // }
-    dispatch(getSingleUser(docSnapData));
+    dispatch(getSingleUser(docSnap.data()));
     toast.success("Logged in successfull.");
   } catch (error) {
     return errorHandler(error);
@@ -229,7 +218,7 @@ export async function hanldeSignOut(profile) {
     } else {
       await signOut(firebaseAuth);
     }
-    toast.success("Signed out successfully.");
+    if (profile !== "forced signout") toast.success("Signed out successfully.");
   } catch (error) {
     return errorHandler(error);
   }
@@ -313,7 +302,18 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
 }
 
 // auto signout after 90days
-export async function handleAutoSignOut() {}
+export async function handleAutoSignOut(data) {
+  const lastLoginMonth = new Date(data?.loginAt);
+  if (lastLoginMonth.getMonth() + 3 < new Date(Date.now()).getMonth()) {
+    const userRef = doc(firestore, "users", data.uid);
+    await updateDoc(userRef, {
+      loginAt: Date.now(),
+    });
+    await hanldeSignOut("forced signout");
+    toast.info("Session Expired.Login Again");
+    return;
+  }
+}
 
 // handle get usernames
 export async function handleGetUserNamesData(dispatch) {

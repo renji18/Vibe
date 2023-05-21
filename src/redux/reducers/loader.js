@@ -2,6 +2,7 @@ import * as actionType from "../actions/actionTypes";
 
 const initialState = {
   siteLoader: true,
+  networkReloadStatus: null,
 };
 
 const loader = (state = initialState, { type, data }) => {
@@ -15,6 +16,11 @@ const loader = (state = initialState, { type, data }) => {
       return {
         ...state,
         firebaseLoader: data,
+      };
+    case actionType.NETWORK_RELOAD_STATUS:
+      return {
+        ...state,
+        networkReloadStatus: data,
       };
     default:
       return state;
