@@ -26,20 +26,16 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
   try {
     if (data) {
       const docSnap = await getSingleDoc("users", data.uid);
-      if (docSnap.exists()) {
+      if (docSnap?.exists()) {
         dispatch(getSingleUser(docSnap.data()));
         setUser(data);
-        if (!sessionStorage.getItem("vibesessionLogin")) {
-          toast.success("Logged in successfully.");
-          sessionStorage.setItem("vibesessionLogin", true);
-        }
         const postRef = collection(firestore, "posts");
         const gibberishPosts = await getDocs(postRef);
         let posts = [];
         gibberishPosts.forEach((post) => posts.push(post.data()));
         dispatch(getAllPosts(posts));
       } else {
-        toast.info("Your are logged out.");
+        dispatch(getSingleUser(null));
       }
     } else {
       dispatch(getSingleUser(null));
@@ -55,10 +51,6 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
 async function stateUpdater(dispatch, uid) {
   const docSnap = await getSingleDoc("users", uid);
   dispatch(getSingleUser(docSnap.data()));
-  if (!sessionStorage.getItem("vibesessionLogin")) {
-    toast.success("Logged in successfully.");
-    sessionStorage.setItem("vibesessionLogin", true);
-  }
   const postRef = collection(firestore, "posts");
   const gibberishPosts = await getDocs(postRef);
   let posts = [];
@@ -69,7 +61,7 @@ async function stateUpdater(dispatch, uid) {
 }
 
 // returns url for a provided image file
-export async function handleUploadImage(file) {
+export async function handleUploadImage(file, location) {
   try {
     const compressImage = await imageCompression(file, {
       maxSizeMB: 1,
@@ -78,7 +70,7 @@ export async function handleUploadImage(file) {
       maxIteration: 10,
       fileType: "image/*",
     });
-    const imgRef = ref(storage, `users/profilePic/${Date.now()}-${file}`);
+    const imgRef = ref(storage, location);
     const upload = await uploadBytes(imgRef, compressImage);
     const res = await getDownloadURL(upload.ref);
     return res;
@@ -92,7 +84,7 @@ export async function handleUploadVideo(file) {
   try {
     // implement npm i video-compressor
 
-    const videoRef = ref(storage, `posts/${Date.now()}-${file}`);
+    const videoRef = ref(storage, `posts/videos/${Date.now()}-${file}`);
     const upload = await uploadBytes(videoRef, file);
     const res = await getDownloadURL(upload.ref);
     return res;
@@ -201,7 +193,10 @@ export async function handleSaveRegistrationData(
     }
     let profilePicUrl = "";
     if (userData.profilePic !== "") {
-      profilePicUrl = await handleUploadImage(userData.profilePic);
+      profilePicUrl = await handleUploadImage(
+        userData.profilePic,
+        `users/profilePics/${Date.now()}-${userData.profilePic}`
+      );
     }
     const data = {
       ...userData, //name, userName, profilepic, bio
@@ -246,83 +241,71 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
     if (profile === null) {
       return toast.warn("Please login first");
     }
-    console.log(1);
     let contentData = [];
-    if (postData.length >= 1) {
-      if (postData[0].type === "image") {
+    if (postData.postData.length >= 1) {
+      if (postData.postData[0].type === "image") {
         contentData = [
           {
-            content: await handleUploadImage(postData[0].file),
+            content: await handleUploadImage(
+              postData.postData[0].file,
+              `posts/images/${Date.now()}-${postData.postData[0].file}`
+            ),
             type: "image",
-            desc: postData[0].desc,
-            likes: [],
-            comments: [],
-            individualPostId: 0,
           },
         ];
       } else {
         contentData = [
           {
-            content: await handleUploadVideo(postData[0].file),
+            content: await handleUploadVideo(postData.postData[0].file),
             type: "video",
-            desc: postData[0].desc,
-            likes: [],
-            comments: [],
-            individualPostId: 0,
           },
         ];
       }
     }
-    console.log(2);
     const data = {
       userId: profile.uid,
       content: contentData,
       timeStamp: Date.now(),
+      user: profile.userName,
+      likes: [],
+      comments: [],
+      description: postData.desc,
     };
-    console.log(data);
     const res = await addDoc(collection(firestore, "posts"), data);
     toast.success("Post created successfully.");
     const userRef = doc(firestore, "users", profile.uid);
-    console.log(4);
     await updateDoc(userRef, {
       personalPosts: [...profile.personalPosts, res.id],
     });
-    console.log(5);
     const postRef = doc(firestore, "posts", res.id);
-    if (postData.length > 1) {
-      for (let i = 1; i < postData.length; i++) {
+    console.log(postData.postData.length);
+    if (postData.postData.length > 1) {
+      for (let i = 1; i < postData.postData.length; i++) {
         const postSnap = await getDoc(postRef);
         const updatedPostData = postSnap.data();
         let contentData;
-        console.log(6);
-        if (postData[i].type === "image") {
+        if (postData.postData[i].type === "image") {
           contentData = {
-            content: await handleUploadImage(postData[i].file),
+            content: await handleUploadImage(
+              postData.postData[i].file,
+              `posts/images/${Date.now()}-${postData.postData[i].file}`
+            ),
             type: "image",
-            desc: postData[i].desc,
-            likes: [],
-            comments: [],
-            individualPostId: i,
           };
         } else {
           contentData = {
-            content: await handleUploadVideo(postData[i].file),
+            content: await handleUploadVideo(postData.postData[i].file),
             type: "video",
-            desc: postData[i].desc,
-            likes: [],
-            comments: [],
-            individualPostId: i,
           };
         }
-        console.log(7);
         await updateDoc(postRef, {
           postId: res.id,
           content: [...updatedPostData.content, contentData],
         });
       }
     }
-    console.log(8);
     stateUpdater(dispatch, profile.uid);
+    console.log(res.id);
   } catch (error) {
     console.log(error);
     return errorHandler(error);
@@ -330,6 +313,7 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
 }
 
 // auto signout after 90days
+export async function handleAutoSignOut() {}
 
 // handle get usernames
 export async function handleGetUserNamesData(dispatch) {

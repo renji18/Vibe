@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home, Login, Register } from "./pages";
+import { Home, Login, NetworkError, Register } from "./pages";
 import { EnterDetails, Loader } from "./components";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,6 +10,7 @@ import CreatePost from "./components/CreatePost";
 function App() {
   const [isDark, setIsDark] = useState(true);
   const [userTheme, setUserTheme] = useState("dark");
+  const [isOnline, setIsOnline] = useState(null);
 
   const { profile } = useSelector((state) => state.userData);
   const { siteLoader, firebaseLoader } = useSelector((state) => state.loader);
@@ -22,6 +23,31 @@ function App() {
       localStorage.setItem("theme", "dark");
     };
     themeSet();
+  }, []);
+
+  // check internet status
+  useEffect(() => {
+    function detectInternet() {
+      if (navigator.onLine) {
+        setIsOnline(true);
+        toast.success("Logged in successfully.");
+        return;
+      } else {
+        setIsOnline(false);
+        toast.warn("You are offline at the moment.");
+        return;
+      }
+    }
+
+    window.addEventListener("load", detectInternet);
+    window.addEventListener("online", detectInternet);
+    window.addEventListener("offline", detectInternet);
+
+    return () => {
+      window.removeEventListener("load", detectInternet);
+      window.removeEventListener("online", detectInternet);
+      window.removeEventListener("offline", detectInternet);
+    };
   }, []);
 
   const themeSwitch = () => {
@@ -55,6 +81,8 @@ function App() {
             element={
               siteLoader || firebaseLoader ? (
                 <Loader />
+              ) : !isOnline ? (
+                <NetworkError />
               ) : !profile ? (
                 <Login themeSwitch={themeSwitch} />
               ) : !profile?.name ? (
@@ -70,6 +98,8 @@ function App() {
             element={
               siteLoader || firebaseLoader ? (
                 <Loader />
+              ) : !isOnline ? (
+                <NetworkError />
               ) : !profile ? (
                 <Register themeSwitch={themeSwitch} />
               ) : !profile?.name ? (

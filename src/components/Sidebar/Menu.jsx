@@ -1,25 +1,25 @@
-import React, { useState } from 'react'
-import { BsFillSunFill } from 'react-icons/bs';
+import React, { useState } from "react";
+import { BsFillSunFill } from "react-icons/bs";
 import { FiSettings, FiBookmark } from "react-icons/fi";
-import { TbLogout } from 'react-icons/tb';
-import { FaMoon } from 'react-icons/fa';
+import { TbLogout } from "react-icons/tb";
+import { FaMoon } from "react-icons/fa";
 
 const Menu = ({ themeSwitch, setHideMenu }) => {
   const [isDark, setIsDark] = useState(true);
 
   const handleModeClick = () => {
-    themeSwitch()
+    themeSwitch();
     setHideMenu(true);
     setIsDark(!isDark);
-  }
+  };
 
   const handleSavedClick = () => {
     setHideMenu(true);
-  }
+  };
 
   const handleSettingsClick = () => {
     setHideMenu(true);
-  }
+  };
 
   return (
     <div className="bg-my-light dark:bg-my-black-2 w-[250px] rounded-lg overflow-hidden relative bottom-0 left-0">
@@ -56,6 +56,6 @@ const Menu = ({ themeSwitch, setHideMenu }) => {
       </div>
     </div>
   );
-}
+};
 
-export default Menu
+export default Menu;

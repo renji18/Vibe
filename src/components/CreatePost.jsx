@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Button} from "../components";
+import { Button } from "../components";
 import { useFirebase } from "../firebase";
 import { toast } from "react-toastify";
 import { handleUserNameExist } from "../firebase/utility";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 const CreatePost = () => {
   const firebase = useFirebase();
 
+  const [desc, setDesc] = useState(null);
   const [postData, setPostData] = useState([
     {
       id: 1,
@@ -17,15 +18,13 @@ const CreatePost = () => {
     },
   ]);
 
-  const { userNames } = useSelector((state) => state.userData);
+  const { userNames } = useSelector((state) => state?.userData);
   const handleUserNameTest = async (name) => {
     const res = await handleUserNameExist(name, userNames);
-    console.log(name);
-    console.log(res);
   };
 
   const handleSaveUserImage = (id, file) => {
-    const fileType = String(file.type).split("/")[0];
+    const fileType = String(file?.type)?.split("/")[0];
     if (fileType === "image") {
       setPostData((prev) =>
         prev.map((i) =>
@@ -59,10 +58,6 @@ const CreatePost = () => {
     );
   };
 
-  const handleSaveUserDesc = (id, desc) => {
-    setPostData((prev) => prev.map((i) => (i.id === id ? { ...i, desc } : i)));
-  };
-
   const handleAddInputTag = () => {
     setPostData((prev) => [
       ...prev,
@@ -89,7 +84,7 @@ const CreatePost = () => {
     });
     if (flag2) return toast.error("Video Too Long");
 
-    firebase.createUserPostHandler(postData);
+    firebase.createUserPostHandler({ postData, desc });
   };
 
   const handleShowModal = () => {
@@ -104,38 +99,37 @@ const CreatePost = () => {
     >
       <div className="bg-my-dark flex md:block rounded-3xl h-[60vh] w-[60vw] md:w-[50vw] sm:w-[90vw] sm:h-[80vh]">
         <div className=" w-1/2 md:w-full md:h-1/2 rounded-3xl">
-          {postData.map((tag, index) => (
+          {postData?.map((tag, index) => (
             <div key={index}>
-              {tag.type === "image" && tag.file !== "" && (
-                <img src={tag.url} alt="" />
+              {tag?.type === "image" && tag?.file !== "" && (
+                <img src={tag?.url} alt="" />
               )}{" "}
-              {tag.type === "video" && tag.file !== "" && (
+              {tag?.type === "video" && tag?.file !== "" && (
                 <video
                   autoPlay
                   muted
                   loop
-                  src={tag.url}
+                  src={tag?.url}
                   onCanPlayThrough={(e) =>
-                    handleVideoDuration(tag.id, e.currentTarget.duration)
+                    handleVideoDuration(tag?.id, e?.currentTarget?.duration)
                   }
                 ></video>
               )}
               <input
                 type="file"
-                onChange={(e) => handleSaveUserImage(tag.id, e.target.files[0])}
-              />
-              <input
-                type="text"
-                onChange={(e) => handleSaveUserDesc(tag.id, e.target.value)}
+                onChange={(e) =>
+                  handleSaveUserImage(tag?.id, e?.target?.files[0])
+                }
               />
             </div>
           ))}
-          <button onClick={handleAddInputTag}>Add More Content</button>
+          <button className="bg-white" onClick={handleAddInputTag}>Add More Content</button>
         </div>
         <div className=" w-1/2 md:w-full md:h-1/2 rounded-3xl">Context</div>
         <input
           type="text"
-          onChange={(e) => handleUserNameTest(e.target.value)}
+          placeholder="desc"
+          onChange={(e) => setDesc(e?.target?.value)}
         />
       </div>
       <Button btnName={`Close Create Post`} handleClick={handleShowModal} />
