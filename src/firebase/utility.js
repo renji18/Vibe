@@ -189,6 +189,8 @@ export async function handleSaveRegistrationData(
     }
     const data = {
       ...userData, //name, userName, profilepic, bio
+      registered: true,
+      verified: false,
       accountType: "public",
       profilePic: profilePicUrl,
       personalPosts: [], // saves post ids (different collection for all posts)
@@ -258,7 +260,7 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
       user: profile.userName,
       likes: [],
       comments: [],
-      description: postData.desc,
+      description: postData?.desc,
     };
     const res = await addDoc(collection(firestore, "posts"), data);
     toast.success("Post created successfully.");
@@ -295,46 +297,103 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
     stateUpdater(dispatch, profile.uid);
     console.log(res.id);
   } catch (error) {
-    console.log(error);
     return errorHandler(error);
   }
 }
 
 // auto signout after 90days
 export async function handleAutoSignOut(data) {
-  const lastLoginMonth = new Date(data?.loginAt);
-  if (lastLoginMonth.getMonth() + 3 < new Date(Date.now()).getMonth()) {
-    const userRef = doc(firestore, "users", data.uid);
-    await updateDoc(userRef, {
-      loginAt: Date.now(),
-    });
-    await hanldeSignOut("forced signout");
-    toast.info("Session Expired. Login Again");
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
-    return;
+  try {
+    const lastLoginMonth = new Date(data?.loginAt);
+    if (lastLoginMonth.getMonth() + 3 < new Date(Date.now()).getMonth()) {
+      const userRef = doc(firestore, "users", data.uid);
+      await updateDoc(userRef, {
+        loginAt: Date.now(),
+      });
+      await hanldeSignOut("forced signout");
+      toast.info("Session Expired. Login Again");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+      return;
+    }
+  } catch (error) {
+    return errorHandler(error);
   }
 }
 
 // handle get usernames
 export async function handleGetUserNamesData(dispatch) {
-  const userNameRef = collection(firestore, "users");
-  const gibberishUsers = await getDocs(userNameRef);
-  let users = [];
-  gibberishUsers.forEach((user) => users.push(user.data()));
-  let userNames = [];
-  users.forEach((user) => {
-    user.userName && userNames.push(user.userName);
-  });
-  dispatch(getUserNamesData(userNames));
+  try {
+    const userNameRef = collection(firestore, "users");
+    const gibberishUsers = await getDocs(userNameRef);
+    let users = [];
+    gibberishUsers.forEach((user) => users.push(user.data()));
+    let userNames = [];
+    users.forEach((user) => {
+      user.userName && userNames.push(user.userName);
+    });
+    dispatch(getUserNamesData(userNames));
+  } catch (error) {
+    return errorHandler(error);
+  }
 }
 
 // handle userNameExist
 export async function handleUserNameExist(value, userNamesArray) {
-  let duplicateUsername = false;
-  userNamesArray.forEach((item) => {
-    if (item === value) return (duplicateUsername = true);
-  });
-  return duplicateUsername;
+  try {
+    let duplicateUsername = false;
+    userNamesArray.forEach((item) => {
+      if (item === value) return (duplicateUsername = true);
+    });
+    return duplicateUsername;
+  } catch (error) {
+    return errorHandler(error);
+  }
 }
+
+// handle like/unlike post
+export async function handleLikeUnlikePost(dispatch, profile) {
+  try {
+    console.log("in here");
+    let postId = "3a0BWBkU5oGUV96GEDGy";
+    if (profile === null) {
+      return toast.warn("Please login first");
+    }
+    let userId = profile.uid;
+    const postSnap = await getSingleDoc("posts", postId);
+    const postData = postSnap.data();
+    const userSnap = await getSingleDoc("users", userId);
+    const userData = userSnap.data();
+    let alreadyLiked = postData.likes.filter((id) => id === userId);
+    const postRef = doc(firestore, "posts", postId);
+    const userRef = doc(firestore, "users", userId);
+    let postsUpdatedLikesId = [];
+    let userUpdatedLikesId = [];
+    if (alreadyLiked.length) {
+      postsUpdatedLikesId = postData.likes.filter((id) => id !== userId);
+      userUpdatedLikesId = userData.likedPosts.filter((id) => id !== postId);
+    } else {
+      postsUpdatedLikesId =
+        postData.likes.length > 0 ? [...postData.likes, userId] : [userId];
+      userUpdatedLikesId =
+        userData.likedPosts.length > 0
+          ? [...userData.likedPosts, postId]
+          : [postId];
+    }
+    await updateDoc(postRef, {
+      likes: postsUpdatedLikesId,
+    });
+    await updateDoc(userRef, {
+      likedPosts: userUpdatedLikesId,
+    });
+    stateUpdater(dispatch, userId);
+    return;
+  } catch (error) {
+    return errorHandler(error);
+  }
+}
+
+// handle save/unsave post
+// handle delete post
+// handle comment on post

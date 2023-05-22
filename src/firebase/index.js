@@ -4,12 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   handleAuthStateChange,
   handleGetUserNamesData,
-  handleUserNameExist,
 } from "./utility";
 import { firebaseAuth } from "./config";
 import {
   createUserPost,
-  getUserNamesData,
   registerLoginSignOutUser,
   saveUserData,
 } from "../redux/actions";
