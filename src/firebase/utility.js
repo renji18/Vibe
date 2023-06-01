@@ -295,7 +295,6 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
       }
     }
     stateUpdater(dispatch, profile.uid);
-    console.log(res.id);
   } catch (error) {
     return errorHandler(error);
   }
@@ -355,7 +354,6 @@ export async function handleUserNameExist(value, userNamesArray) {
 // handle like/unlike post
 export async function handleLikeUnlikePost(dispatch, profile) {
   try {
-    console.log("in here");
     let postId = "3a0BWBkU5oGUV96GEDGy";
     if (profile === null) {
       return toast.warn("Please login first");
@@ -395,5 +393,5 @@ export async function handleLikeUnlikePost(dispatch, profile) {
 }
 
 // handle save/unsave post
-// handle delete post
 // handle comment on post
+// handle delete post
