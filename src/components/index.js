@@ -13,6 +13,7 @@ import SuggestionBox from "./SuggestionBox";
 import RightBox from "./RightBox/RightBox";
 import Loader from "./Utility/Loader";
 import Menu from "./Sidebar/Menu";
+import MiddleSection from "./MiddleBox/MiddleSection";
 
 export {
   Sidebar,
@@ -30,4 +31,5 @@ export {
   RightBox,
   Loader,
   Menu,
+  MiddleSection,
 };

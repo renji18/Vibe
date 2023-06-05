@@ -1,5 +1,5 @@
 import React from "react";
-import { RightBox, Explore, Sidebar, SuggestionBox } from "../components";
+import { RightBox, Sidebar, SuggestionBox, MiddleSection } from "../components";
 
 const Home = ({themeSwitch}) => {
 
@@ -8,7 +8,7 @@ const Home = ({themeSwitch}) => {
       <div className="flex w-full h-full  bg-my-light dark:bg-my-dark ">
         <Sidebar themeSwitch={themeSwitch} />
         <SuggestionBox />
-        <Explore />
+        <MiddleSection />
         <RightBox />
       </div>
     </div>
