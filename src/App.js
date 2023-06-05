@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home, Login, Register } from "./pages";
+import { Home, Login, NetworkError, Register } from "./pages";
 import { EnterDetails, Loader } from "./components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CreatePost from "./components/CreatePost";
+import { getSingleDoc } from "./firebase/utility";
+import { networkReloadHandler } from "./redux/actions";
 
 function App() {
+  const dispatch = useDispatch();
   const [isDark, setIsDark] = useState(true);
   const [userTheme, setUserTheme] = useState("dark");
+  const [isOnline, setIsOnline] = useState(true);
 
   const { profile } = useSelector((state) => state.userData);
-  const { siteLoader, firebaseLoader } = useSelector((state) => state.loader);
+  const { siteLoader, firebaseLoader } = useSelector(
+    (state) => state.loader
+  );
 
   useEffect(() => {
     const themeSet = () => {
@@ -21,6 +28,39 @@ function App() {
       localStorage.setItem("theme", "dark");
     };
     themeSet();
+  }, []);
+
+  useEffect(() => {
+    const firstNetworkTest = async () => {
+      const res = await getSingleDoc(
+        "users",
+        "internetTesterToCheckIfNetIsConnectedOrNot"
+      );
+      if (res) {
+        setIsOnline(true);
+      } else {
+        setIsOnline(false);
+      }
+    };
+    firstNetworkTest();
+  }, []);
+
+  useEffect(() => {
+    const testNetwork = async () => {
+      const res = await getSingleDoc(
+        "users",
+        "internetTesterToCheckIfNetIsConnectedOrNot"
+      );
+      if (res) {
+        setIsOnline(true);
+      } else {
+        setIsOnline(false);
+      }
+    };
+    setInterval(testNetwork, 5000);
+    return () => {
+      clearInterval(testNetwork);
+    };
   }, []);
 
   const themeSwitch = () => {
@@ -36,7 +76,6 @@ function App() {
     setIsDark(true);
     localStorage.setItem("theme", "dark");
   };
-  console.log(siteLoader, firebaseLoader, !profile);
   return (
     <>
       <ToastContainer
@@ -46,6 +85,7 @@ function App() {
         draggable={false}
         toastStyle={{ color: "#333333" }}
       />
+      <CreatePost />
       <BrowserRouter>
         <Routes>
           <Route
@@ -54,6 +94,8 @@ function App() {
             element={
               siteLoader || firebaseLoader ? (
                 <Loader />
+              ) : !isOnline ? (
+                <NetworkError />
               ) : !profile ? (
                 <Login themeSwitch={themeSwitch} />
               ) : !profile?.name ? (
@@ -69,6 +111,8 @@ function App() {
             element={
               siteLoader || firebaseLoader ? (
                 <Loader />
+              ) : !isOnline ? (
+                <NetworkError />
               ) : !profile ? (
                 <Register themeSwitch={themeSwitch} />
               ) : !profile?.name ? (

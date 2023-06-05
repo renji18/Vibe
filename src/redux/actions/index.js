@@ -1,7 +1,10 @@
 export {
   getSingleUser,
-  toggleMainLoader,
   registerLoginSignOutUser,
-  toggleFirebaseLoader,
-  saveUserData
+  saveUserData,
+  getUserNamesData,
 } from "./userActions";
+
+export { toggleMainLoader, toggleFirebaseLoader } from "./miscellaneous";
+
+export { createUserPost, getAllPosts } from "./postActions";

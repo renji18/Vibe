@@ -1,8 +1,8 @@
-import React from 'react'
-import { FaUser } from 'react-icons/fa'
+import React from "react";
+import { FaUser } from "react-icons/fa";
 import { TbLogout } from "react-icons/tb";
-import { useSelector } from 'react-redux';
-import { useFirebase } from '../../../firebase';
+import { useSelector } from "react-redux";
+import { useFirebase } from "../../../firebase";
 
 const ProfileBox = () => {
   const firebase = useFirebase();
@@ -39,6 +39,6 @@ const ProfileBox = () => {
       />
     </div>
   );
-}
+};
 
-export default ProfileBox
+export default ProfileBox;

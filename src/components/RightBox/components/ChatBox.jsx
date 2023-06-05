@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaUser } from 'react-icons/fa';
+import React from "react";
+import { FaUser } from "react-icons/fa";
 
 const SingleChatBox = () => {
   return (
@@ -41,6 +41,6 @@ const ChatBox = () => {
       </div>
     </div>
   );
-}
+};
 
-export default ChatBox
+export default ChatBox;

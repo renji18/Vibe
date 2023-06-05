@@ -1,6 +1,7 @@
 import { takeLatest } from "redux-saga/effects";
 import * as actionTypes from "../actions/actionTypes";
 import * as userMiddleware from "./userSaga";
+import * as postMiddleware from "./postSaga";
 
 export default function* mySaga() {
   yield takeLatest(
@@ -14,5 +15,9 @@ export default function* mySaga() {
   yield takeLatest(
     actionTypes.SAVE_USER_DATA,
     userMiddleware.saveUserDataSagaCall
+  );
+  yield takeLatest(
+    actionTypes.CREATE_POST,
+    postMiddleware.createUserPostSagaCall
   );
 }

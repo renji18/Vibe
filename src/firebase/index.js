@@ -1,9 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { handleAuthStateChange } from "./utility";
+import {
+  handleAuthStateChange,
+  handleGetUserNamesData,
+} from "./utility";
 import { firebaseAuth } from "./config";
 import {
+  createUserPost,
   registerLoginSignOutUser,
   saveUserData,
 } from "../redux/actions";
@@ -22,8 +26,9 @@ export const FirebaseProvider = (props) => {
 
   // useEffect to catch logins, registrations and logouts
   useEffect(() => {
+    handleGetUserNamesData(dispatch);
     onAuthStateChanged(firebaseAuth, async (data) =>
-      handleAuthStateChange(data, dispatch,  setUser)
+      handleAuthStateChange(data, dispatch, setUser)
     );
   }, [dispatch]);
 
@@ -34,19 +39,24 @@ export const FirebaseProvider = (props) => {
 
   // sign in email/pw
   const signInUserUsingEmailAndPassword = async (email, password) => {
-    dispatch(registerLoginSignOutUser("login", profile, email, password));
+    dispatch(
+      registerLoginSignOutUser("login", profile, email, password, dispatch)
+    );
   };
 
   // saving user data on registration
   const saveUserDataOnRegistration = async (userData) => {
-    dispatch(
-      saveUserData(profile, userData, user, dispatch, setUser)
-    );
+    dispatch(saveUserData(profile, userData, user, dispatch, setUser));
   };
 
   // signout
   const signOutUser = async () => {
     dispatch(registerLoginSignOutUser("signout", profile));
+  };
+
+  // upload user post
+  const createUserPostHandler = async (postData) => {
+    dispatch(createUserPost(dispatch, profile, postData));
   };
 
   return (
@@ -56,6 +66,7 @@ export const FirebaseProvider = (props) => {
         signInUserUsingEmailAndPassword,
         saveUserDataOnRegistration,
         signOutUser,
+        createUserPostHandler,
       }}
     >
       {props.children}

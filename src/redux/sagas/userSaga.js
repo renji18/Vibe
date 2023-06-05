@@ -6,7 +6,6 @@ import {
 } from "./services";
 import { toast } from "react-toastify";
 
-//.success, info, error, warn
 
 // Simple main api loader
 export function* mainLoaderSagaCall(action) {
@@ -21,7 +20,8 @@ export function* registerLoginSignOutSagaCall(action) {
       action.method,
       action.profile,
       action.email,
-      action.password
+      action.password,
+      action.dispatch
     );
     yield put(actionCreators.toggleFirebaseLoader(false));
   } catch (error) {
@@ -47,3 +47,5 @@ export function* saveUserDataSagaCall(action) {
     toast.error(error);
   }
 }
+
+

@@ -1,31 +1,33 @@
-import React, { useState } from 'react'
-import images from '../../assets';
-import { Menu } from '../'
-import { Link } from 'react-router-dom'
-import { GrHomeRounded } from 'react-icons/gr'
+import React, { useState } from "react";
+import images from "../../assets";
+import { Menu } from "../";
+import { Link } from "react-router-dom";
+import { GrHomeRounded } from "react-icons/gr";
 import { BiSearchAlt2, BiChat } from "react-icons/bi";
 import { MdOutlineExplore } from "react-icons/md";
-import { AiOutlineMenu } from 'react-icons/ai';
+import { AiOutlineMenu } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { FiPlusSquare } from "react-icons/fi";
-import { useSelector } from 'react-redux';
-import { TbNotification } from 'react-icons/tb';
+import { useSelector } from "react-redux";
+import { TbNotification } from "react-icons/tb";
 
-const Sidebar = ({themeSwitch}) => {
+const Sidebar = ({ themeSwitch }) => {
   const [hideMenu, setHideMenu] = useState(true);
   const { profile } = useSelector((state) => state.userData);
 
   const menuHandler = () => {
     setHideMenu(!hideMenu);
-  }
+  };
+
+  const handleCreatePost = () => {
+    const createPostModalRef = document.getElementById("createPostModal");
+    createPostModalRef.classList.replace("hidden", "flex");
+  };
 
   return (
     <div className="h-full fixed z-10 flex items-center">
       <div className="flex justify-between items-center flex-col mx-4 h-[93vh]">
-        <div
-          className="flex-1 flex flex-col justify-between items-center bg-my-light dark:bg-my-black-1
-       rounded-[20px] w-[76px] py-4"
-        >
+        <div className="flex-1 flex flex-col justify-between items-center bg-my-light dark:bg-my-black-1 rounded-[20px] w-[76px] py-4">
           <Link to="/">
             <img src={images.dark_symbol} alt="vibe" className="w-10" />
           </Link>
@@ -70,39 +72,40 @@ const Sidebar = ({themeSwitch}) => {
                 size={26}
                 className="filter invert cursor-pointer"
                 title="Create"
+                onClick={handleCreatePost}
               />
             </Link>
-            <Link to="/">
-              <div
-                title="Profile"
-                className="w-8 h-8 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center overflow-hidden"
-              >
-                {profile.profilePic ? (
-                  <img
-                    src={profile.profilePic}
-                    alt="profile"
-                    className="rounded-full h-full scale-95"
-                  />
-                ) : (
-                  <FaUser />
-                )}
-              </div>
-            </Link>
           </div>
+          <Link to="/">
+            <div
+              title="Profile"
+              className="w-8 h-8 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center overflow-hidden"
+            >
+              {profile.profilePic ? (
+                <img
+                  src={profile.profilePic}
+                  alt="profile"
+                  className="rounded-full h-full scale-95"
+                />
+              ) : (
+                <FaUser />
+              )}
+            </div>
+          </Link>
 
           <AiOutlineMenu
             size={30}
-            className="filter invert cursor-pointer"
+            className="filter mt-5 invert cursor-pointer"
             title="More"
             onClick={menuHandler}
-            />
+          />
         </div>
       </div>
-            {!hideMenu && (
-              <Menu themeSwitch={themeSwitch} setHideMenu={setHideMenu} />
-            )}
+      {!hideMenu && (
+        <Menu themeSwitch={themeSwitch} setHideMenu={setHideMenu} />
+      )}
     </div>
   );
-}
+};
 
-export default Sidebar
+export default Sidebar;
