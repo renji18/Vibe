@@ -76,34 +76,40 @@ const Sidebar = ({ themeSwitch }) => {
               />
             </Link>
           </div>
-          <Link to="/">
-            <div
-              title="Profile"
-              className="w-8 h-8 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center overflow-hidden"
-            >
-              {profile.profilePic ? (
-                <img
-                  src={profile.profilePic}
-                  alt="profile"
-                  className="rounded-full h-full scale-95"
-                />
-              ) : (
-                <FaUser />
+          <div className="flex relative">
+            <div className="flex flex-col items-center">
+              <Link to="/">
+                <div
+                  title="Profile"
+                  className="w-7 h-7 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center overflow-hidden"
+                >
+                  {profile.profilePic ? (
+                    <img
+                      src={profile.profilePic}
+                      alt="profile"
+                      className="rounded-full h-full scale-95"
+                    />
+                  ) : (
+                    <FaUser />
+                  )}
+                </div>
+              </Link>
+
+              <AiOutlineMenu
+                size={25}
+                className="filter mt-5 invert cursor-pointer"
+                title="More"
+                onClick={menuHandler}
+              />
+            </div>
+            <div className="relative">
+              {!hideMenu && (
+                <Menu themeSwitch={themeSwitch} setHideMenu={setHideMenu} />
               )}
             </div>
-          </Link>
-
-          <AiOutlineMenu
-            size={30}
-            className="filter mt-5 invert cursor-pointer"
-            title="More"
-            onClick={menuHandler}
-          />
+          </div>
         </div>
       </div>
-      {!hideMenu && (
-        <Menu themeSwitch={themeSwitch} setHideMenu={setHideMenu} />
-      )}
     </div>
   );
 };

@@ -3,12 +3,16 @@ import { BsFillSunFill } from "react-icons/bs";
 import { FiSettings, FiBookmark } from "react-icons/fi";
 import { TbLogout } from "react-icons/tb";
 import { FaMoon } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { themeSwitchAction } from "../../redux/actions";
 
 const Menu = ({ themeSwitch, setHideMenu }) => {
   const [isDark, setIsDark] = useState(true);
+  const { isDarkTheme } = useSelector((state) => state.themeReducer);
 
   const handleModeClick = () => {
     themeSwitch();
+    // console.log(isDarkTheme)
     setHideMenu(true);
     setIsDark(!isDark);
   };
@@ -22,7 +26,7 @@ const Menu = ({ themeSwitch, setHideMenu }) => {
   };
 
   return (
-    <div className="bg-my-light dark:bg-my-black-2 w-[250px] rounded-lg overflow-hidden relative bottom-0 left-0">
+    <div className="bg-my-light dark:bg-my-black-2 w-[250px] rounded-lg overflow-hidden absolute bottom-8 -left-10 ">
       <div className="w-full">
         <div
           onClick={handleModeClick}

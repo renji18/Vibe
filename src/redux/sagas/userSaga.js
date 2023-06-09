@@ -12,6 +12,11 @@ export function* mainLoaderSagaCall(action) {
   yield put(actionCreators.toggleMainLoader(false));
 }
 
+// Simple main api loader
+export function* themeSwitchSagaCall(action) {
+  yield put(actionCreators.themeSwitchAction(action.data));
+}
+
 // Registration, Login and Signout saga
 export function* registerLoginSignOutSagaCall(action) {
   try {

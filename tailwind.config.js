@@ -7,12 +7,14 @@ module.exports = {
     extend: {
       colors: {
         "regal-blue": "#243c5a",
-        "my-dark": "#24252D",
+        // "my-dark": "#24252D",
+        "my-dark": "#000000",
         "my-light": "#F5F5F5",
         "my-gray-1": "#A9A9A9",
         "my-gray-2": "#888888",
         "my-gray-3": "#4F4F4F",
-        "my-black-1": "#2D2E36",
+        "my-black-1": "#191919",
+        // "my-black-1": "#2D2E36",
         "my-black-2": "#1B1A21",
         "my-black-3": "#2A2D3A",
         "my-black-4": "#24252D",

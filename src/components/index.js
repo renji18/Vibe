@@ -14,6 +14,7 @@ import RightBox from "./RightBox/RightBox";
 import Loader from "./Utility/Loader";
 import Menu from "./Sidebar/Menu";
 import MiddleSection from "./MiddleBox/MiddleSection";
+import MiddleBox from "./MiddleBox/MiddleBox";
 
 export {
   Sidebar,
@@ -32,4 +33,5 @@ export {
   Loader,
   Menu,
   MiddleSection,
+  MiddleBox,
 };

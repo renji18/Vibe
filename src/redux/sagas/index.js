@@ -20,4 +20,8 @@ export default function* mySaga() {
     actionTypes.CREATE_POST,
     postMiddleware.createUserPostSagaCall
   );
+  yield takeLatest(
+    actionTypes.THEME_SWITCH,
+    userMiddleware.themeSwitchSagaCall
+  );
 }
