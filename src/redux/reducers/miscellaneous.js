@@ -1,19 +1,17 @@
-import * as actionType from "../actions/actionTypes";
-
+// ./redux/reducers/themeReducer.js
 const initialState = {
-  isDarkTheme: true,
+  isDarkTheme: true, // Set the initial theme based on your default theme
 };
 
 export const themeReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionType.THEME_SWITCH:
-      console.log("Theme switched:", action.data);
+    case "UPDATE_THEME":
       return {
         ...state,
-        isDarkTheme: action.data,
+        isDarkTheme: action.payload,
       };
-
     default:
       return state;
   }
 };
+

@@ -7,7 +7,11 @@
   import "react-toastify/dist/ReactToastify.css";
   import CreatePost from "./components/CreatePost";
   import { getSingleDoc } from "./firebase/utility";
-  import { networkReloadHandler, themeSwitchAction } from "./redux/actions";
+  import {
+    networkReloadHandler,
+    themeSwitchAction,
+    updateTheme,
+  } from "./redux/actions";
 
   function App() {
     const dispatch = useDispatch();
@@ -15,7 +19,6 @@
     const [userTheme, setUserTheme] = useState("dark");
     const [isOnline, setIsOnline] = useState(true);
     const { isDarkTheme } = useSelector((state) => state.themeReducer);
-    console.log(isDarkTheme)
 
     const { profile } = useSelector((state) => state.userData);
     const { siteLoader, firebaseLoader } = useSelector(
@@ -24,14 +27,20 @@
 
     useEffect(() => {
       const themeSet = () => {
-        document.documentElement.classList.add("dark");
-        setUserTheme("dark");
-        // dispatch(themeSwitchAction(true));
-        setIsDark(true);
-        localStorage.setItem("theme", "dark");
+        if (userTheme === "dark") {
+          document.documentElement.classList.add("dark");
+          setIsDark(true);
+          localStorage.setItem("theme", "dark");
+          dispatch(updateTheme(true)); // Update the theme in Redux store
+        } else {
+          document.documentElement.classList.remove("dark");
+          setIsDark(false);
+          localStorage.setItem("theme", "light");
+          dispatch(updateTheme(false)); // Update the theme in Redux store
+        }
       };
       themeSet();
-    }, [dispatch]);
+    }, [dispatch, userTheme]);
 
     const themeSwitch = () => {
       if (document.documentElement.classList.contains("dark")) {
@@ -47,6 +56,7 @@
       setIsDark(true);
       // dispatch(themeSwitchAction(true));
       localStorage.setItem("theme", "dark");
+      dispatch(updateTheme(isDark));
     };
 
 

@@ -16,3 +16,6 @@ export const FIREBASE_LOADER = "FIREBASE_LOADER";
 
 export const THEME_SWITCH = "THEME_SWITCH";
 
+export const UPDATE_THEME = "UPDATE_THEME";
+
+

@@ -5,6 +5,6 @@ export {
   getUserNamesData,
 } from "./userActions";
 
-export { toggleMainLoader, toggleFirebaseLoader, themeSwitchAction } from "./miscellaneous";
+export { toggleMainLoader, toggleFirebaseLoader, themeSwitchAction, updateTheme } from "./miscellaneous";
 
 export { createUserPost, getAllPosts } from "./postActions";

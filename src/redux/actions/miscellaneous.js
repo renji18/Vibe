@@ -18,3 +18,9 @@ export const themeSwitchAction = (data) => ({
   data,
 });
 
+export const updateTheme = (isDark) => {
+  return {
+    type: "UPDATE_THEME",
+    payload: isDark,
+  };
+};

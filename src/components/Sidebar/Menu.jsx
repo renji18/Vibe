@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { BsFillSunFill } from "react-icons/bs";
 import { FiSettings, FiBookmark } from "react-icons/fi";
 import { TbLogout } from "react-icons/tb";
 import { FaMoon } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { themeSwitchAction } from "../../redux/actions";
+import { useFirebase } from "../../firebase";
 
 const Menu = ({ themeSwitch, setHideMenu }) => {
-  const [isDark, setIsDark] = useState(true);
+  const firebase = useFirebase();
   const { isDarkTheme } = useSelector((state) => state.themeReducer);
 
   const handleModeClick = () => {
     themeSwitch();
-    // console.log(isDarkTheme)
     setHideMenu(true);
-    setIsDark(!isDark);
   };
 
   const handleSavedClick = () => {
@@ -32,7 +30,7 @@ const Menu = ({ themeSwitch, setHideMenu }) => {
           onClick={handleModeClick}
           className="flex items-center pl-4 py-3 dark:hover:bg-my-black-3 cursor-pointer"
         >
-          {isDark ? (
+          {isDarkTheme ? (
             <BsFillSunFill className=" filter invert ml-2" size={20} />
           ) : (
             <FaMoon className="ml-2" color="#24252D" size={20} />
@@ -43,19 +41,22 @@ const Menu = ({ themeSwitch, setHideMenu }) => {
           onClick={handleSavedClick}
           className="flex items-center pl-4 py-3 dark:hover:bg-my-black-3 cursor-pointer"
         >
-          <FiBookmark className="filter invert ml-2" size={20} />
+          <FiBookmark className="ml-2 dark:filter dark:invert" size={20} />
           <span className="text-black dark:text-white ml-4">Saved Posts</span>
         </div>
         <div
           onClick={handleSettingsClick}
           className="flex items-center pl-4 py-3 -mb-3 dark:hover:bg-my-black-3 cursor-pointer"
         >
-          <FiSettings className="filter invert ml-2" size={20} />
+          <FiSettings className="ml-2 dark:filter dark:invert" size={20} />
           <span className="text-black dark:text-white ml-4 ">Settings</span>
         </div>
       </div>
-      <div className="flex items-center mt-3 border-t border-my-black-1 dark:border-my-gray-3 pl-4 py-3 dark:hover:bg-my-black-3 cursor-pointer">
-        <TbLogout className="filter invert ml-2" size={20} />
+      <div
+        onClick={firebase.signOutUser}
+        className="flex items-center mt-3 border-t border-my-black-1 dark:border-my-gray-3 pl-4 py-3 dark:hover:bg-my-black-3 cursor-pointer"
+      >
+        <TbLogout className="ml-2 dark:filter dark:invert" size={20} />
         <span className="text-black dark:text-white ml-4">Logout</span>
       </div>
     </div>

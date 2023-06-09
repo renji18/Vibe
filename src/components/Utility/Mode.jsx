@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaMoon } from "react-icons/fa";
 import { BsFillSunFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 const Mode = ({ themeSwitch, classStyles }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+    const { isDarkTheme } = useSelector((state) => state.themeReducer);
 
   const toggleMode = () => {
-    setIsDarkMode(!isDarkMode);
     themeSwitch();
   };
 
@@ -20,7 +20,7 @@ const Mode = ({ themeSwitch, classStyles }) => {
           className="circle  rounded-full w-10 h-10 flex items-center justify-center"
           onClick={toggleMode}
         >
-          {isDarkMode ? (
+          {!isDarkTheme ? (
             <FaMoon className="icon text-my-dark" />
           ) : (
             <BsFillSunFill className=" w-5 h-5 icon text-my-light" />
