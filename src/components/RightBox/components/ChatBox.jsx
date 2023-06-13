@@ -3,7 +3,7 @@ import { FaUser } from "react-icons/fa";
 
 const SingleChatBox = () => {
   return (
-    <div className="bg-my-gray-1 dark:bg-my-black-1 pt-4 flex items-center justify-between">
+    <div className="bg-purple-300 dark:bg-my-black-1 pt-4 flex items-center justify-between">
       <div className="space-x-4 flex">
         <div className="w-10 h-10 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center">
           <FaUser className="dark:filter-none invert" />
@@ -23,7 +23,7 @@ const SingleChatBox = () => {
 
 const ChatBox = () => {
   return (
-    <div className="bg-my-gray-1 dark:bg-my-black-1 h-[62%] py-4 pl-4 overflow-hidden rounded-lg">
+    <div className="bg-purple-300 dark:bg-my-black-1 h-[62%] py-4 pl-4 overflow-hidden rounded-lg">
       <p className="font-medium text-black dark:text-white tracking-wider">
         Message
       </p>

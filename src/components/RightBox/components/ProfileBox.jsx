@@ -10,7 +10,7 @@ const ProfileBox = () => {
   const { profile } = useSelector((state) => state.userData);
 
   return (
-    <div className="bg-my-gray-1 dark:bg-my-black-1 p-4 flex items-center justify-between rounded-lg">
+    <div className="bg-purple-500 dark:bg-my-black-1 p-4 flex items-center justify-between rounded-lg">
       <div className="space-x-4 flex">
         <div className="w-12 h-12 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center overflow-hidden">
           {profile.profilePic ? (

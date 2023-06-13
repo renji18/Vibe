@@ -6,7 +6,7 @@ const MiddleSection = () => {
     const { posts } = useSelector((state) => state.postsData);
 
   return (
-    <div className="bg-my-light dark:bg-my-dark ml-[29vw] min-h-screen w-[47vw] py-4">
+    <div className="bg-my-light dark:bg-my-dark ml-[29vw] min-h-screen w-[47vw] py-4 px-4">
     {posts && posts.map((post, key) => (
       <MiddleBox key={key} post={post} />
       ))}  

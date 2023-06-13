@@ -28,7 +28,7 @@ const Sidebar = ({ themeSwitch }) => {
   return (
     <div className="h-full fixed z-10 flex items-center">
       <div className="flex justify-between items-center flex-col mx-4 h-[93vh]">
-        <div className="flex-1 flex flex-col justify-between items-center bg-my-gray-1 dark:bg-my-black-1 rounded-[20px] w-[76px] py-4">
+        <div className="flex-1 flex flex-col justify-between items-center bg-purple-500 dark:bg-my-black-1 rounded-[20px] w-[76px] py-4">
           <Link to="/">
             {isDarkTheme ? (
             <img src={images.dark_symbol} alt="vibe" className="w-8" />
