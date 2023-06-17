@@ -354,7 +354,7 @@ export async function handleUserNameExist(value, userNamesArray) {
 // handle like/unlike post
 export async function handleLikeUnlikePost(dispatch, profile) {
   try {
-    let postId = "3a0BWBkU5oGUV96GEDGy";
+    let postId = "3a0BWBkU5oGUV96GEDGy"; // we will pass the id of the post, it's not connected yet
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -393,5 +393,35 @@ export async function handleLikeUnlikePost(dispatch, profile) {
 }
 
 // handle save/unsave post
+export async function handleSaveUnsavePost(dispatch, profile) {
+  try {
+    let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
+    if (profile === null) {
+      return toast.warn("Please login first");
+    }
+    let userId = profile.uid;
+    const userSnap = await getSingleDoc("users", userId);
+    const userData = userSnap.data();
+    let alreadySaved = userData.savedPosts.filter((id) => id === postId);
+    const userRef = doc(firestore, "users", userId);
+    let userUpdatedSavedId = [];
+    if (alreadySaved.length) {
+      userUpdatedSavedId = userData.savedPosts.filter((id) => id !== postId);
+    } else {
+      userUpdatedSavedId =
+        userData.savedPosts.length > 0
+          ? [...userData.savedPosts, postId]
+          : [postId];
+    }
+    await updateDoc(userRef, {
+      savedPosts: userUpdatedSavedId,
+    });
+    stateUpdater(dispatch, userId);
+    return;
+  } catch (error) {
+    return errorHandler(error);
+  }
+}
+
 // handle comment on post
 // handle delete post
