@@ -13,3 +13,9 @@ export const CREATE_POST = "CREATE_POST";
 export const MAIN_LOADER = "MAIN_LOADER";
 
 export const FIREBASE_LOADER = "FIREBASE_LOADER";
+
+export const THEME_SWITCH = "THEME_SWITCH";
+
+export const UPDATE_THEME = "UPDATE_THEME";
+
+

@@ -1,13 +1,13 @@
 import React from "react";
-import { RightBox, Explore, Sidebar, SuggestionBox } from "../components";
+import { RightBox, LeftBox, Sidebar, MiddleSection } from "../components";
 
 const Home = ({ themeSwitch }) => {
   return (
-    <div className="w-full bg-my-light dark:bg-my-dark">
+    <div className="w-full bg-purple-300 dark:bg-my-dark">
       <div className="flex w-full h-full  bg-my-light dark:bg-my-dark ">
         <Sidebar themeSwitch={themeSwitch} />
-        <SuggestionBox />
-        <Explore />
+        <LeftBox />
+        <MiddleSection />
         <RightBox />
       </div>
     </div>

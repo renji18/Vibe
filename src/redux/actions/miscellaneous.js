@@ -11,3 +11,16 @@ export const toggleFirebaseLoader = (data) => ({
   type: actionType.FIREBASE_LOADER,
   data,
 });
+
+// Theme switching
+export const themeSwitchAction = (data) => ({
+  type: actionType.THEME_SWITCH,
+  data,
+});
+
+export const updateTheme = (isDark) => {
+  return {
+    type: "UPDATE_THEME",
+    payload: isDark,
+  };
+};

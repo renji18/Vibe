@@ -1,4 +1,5 @@
-import { put } from "redux-saga/effects";
+import { put, takeEvery } from "redux-saga/effects";
+import * as actionType from "../actions/actionTypes";
 import * as actionCreators from "../actions";
 import {
   registerLoginSignOutSagaAsyncHandler,
@@ -10,6 +11,26 @@ import { toast } from "react-toastify";
 // Simple main api loader
 export function* mainLoaderSagaCall(action) {
   yield put(actionCreators.toggleMainLoader(false));
+}
+
+// Simple main api loader
+export function* themeSwitchSagaCall(action) {
+  yield put(actionCreators.themeSwitchAction(action.data));
+}
+
+function* updateThemeSaga(action) {
+  try {
+    // Perform any additional logic or API calls if needed
+    // Here, we simply put the theme update action in the store
+    yield put({ type: actionType.THEME_SWITCH, data: action.isDarkTheme });
+  } catch (error) {
+    // Handle any errors
+    console.error("Error updating theme:", error);
+  }
+}
+
+export function* watchThemeSaga() {
+  yield takeEvery(actionType.UPDATE_THEME, updateThemeSaga);
 }
 
 // Registration, Login and Signout saga
