@@ -13,6 +13,7 @@ import { FaUser } from 'react-icons/fa';
 const MiddleBox = ({ post }) => {
   const firebase = useFirebase();
   const [isLiked, setIsLiked] = useState(false);
+  const [commentText, setCommentText] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [isComment, setIsComment] = useState(false);
 
@@ -44,6 +45,15 @@ const MiddleBox = ({ post }) => {
 
   const saveHandler = () => {
     firebase.savePostHandler(post.postId);
+  }
+
+  const commentHandler = (comment) => {
+    firebase.commentOnPostHandler(post.postId, comment);
+    setCommentText("");
+  }
+
+  const commentChangeHandler = (e) => {
+    setCommentText(e.target.value);
   }
 
   const openComment = () => {
@@ -98,6 +108,7 @@ const MiddleBox = ({ post }) => {
                     />
                   )}
                   <RiChat1Line
+                    onClick={openComment}
                     className="cursor-pointer dark:filter dark:invert"
                     size={28}
                   />
@@ -143,20 +154,22 @@ const MiddleBox = ({ post }) => {
                 <div className="flex items-center">
                   <textarea
                     placeholder="Add a comment..."
+                    onChange={commentChangeHandler}
                     className="w-full text-sm mt-2 bg-transparent outline-none dark:text-white text-my-black-1"
                   />
-                  <p className="dark:text-my-gray-1 text-my-black-1 font-medium cursor-pointer text-xs">
-                    POST
-                  </p>
+                  {commentText && (
+                    <p
+                      onClick={() => commentHandler(commentText)}
+                      className="dark:text-my-gray-1 text-my-black-1 font-medium cursor-pointer text-xs"
+                    >
+                      POST
+                    </p>
+                  )}
                 </div>
               </div>
               {isComment && (
                 <div className="flex justify-center items-center">
-                  <CommentModal
-                    desc={post?.description}
-                    userName={post?.user}
-                    comments={post?.comments}
-                  />
+                  <CommentModal post={post} />
                 </div>
               )}
             </div>
