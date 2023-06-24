@@ -71,19 +71,28 @@ const CreatePost = () => {
   };
 
   const handleCreatePost = () => {
-    // let flag1 = false;
-    // postData.map((i) => {
-    //   if (!i.file) return (flag1 = true);
-    //   return flag1;
-    // });
-    // if (flag1) return toast.error("Proper Data Not Provided");
-    // let flag2 = false;
-    // postData.map((i) => {
-    //   if (i.duration > 60) return (flag2 = true);
-    //   return flag2;
-    // });
-    // if (flag2) return toast.error("Video Too Long");
-    firebase.commentOnPostHandler();
+    let flag1 = false;
+    postData.map((i) => {
+      if (!i.file) return (flag1 = true);
+      return flag1;
+    });
+    if (flag1) return toast.error("Proper Data Not Provided");
+    let flag2 = false;
+    postData.map((i) => {
+      if (i.duration > 60) return (flag2 = true);
+      return flag2;
+    });
+    if (flag2) return toast.error("Video Too Long");
+    firebase.createUserPostHandler({ postData, desc });
+    setPostData([
+      {
+        id: 1,
+        file: "",
+        type: "",
+        url: "",
+      },
+    ]);
+    setDesc(null);
   };
 
   const handleShowModal = () => {

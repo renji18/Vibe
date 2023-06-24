@@ -143,6 +143,7 @@ export async function handleRegistration(profile, email, password) {
     });
     toast.success("Account registered successfully.");
   } catch (error) {
+    console.log(error);
     return errorHandler(error);
   }
 }
@@ -228,6 +229,7 @@ export async function hanldeSignOut(profile) {
 // handle create post
 export async function handleCreateUserPost(dispatch, profile, postData) {
   try {
+    console.log(postData);
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -262,6 +264,7 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
       description: postData?.desc,
     };
     const res = await addDoc(collection(firestore, "posts"), data);
+    console.log(res);
     toast.success("Post created successfully.");
     const userRef = doc(firestore, "users", profile.uid);
     await updateDoc(userRef, {
@@ -288,11 +291,13 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
           };
         }
         await updateDoc(postRef, {
-          postId: res.id,
           content: [...updatedPostData.content, contentData],
         });
       }
     }
+    await updateDoc(postRef, {
+      postId: res.id,
+    });
     stateUpdater(dispatch, profile.uid);
   } catch (error) {
     return errorHandler(error);
@@ -354,7 +359,7 @@ export async function handleUserNameExist(value, userNamesArray) {
 export async function handleLikeUnlikePost(dispatch, profile, postId) {
   try {
     // let postId = "3a0BWBkU5oGUV96GEDGy"; // we will pass the id of the post, it's not connected yet
-    console.log(profile, postId)
+    console.log(profile, postId, "postid, profile");
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -363,19 +368,20 @@ export async function handleLikeUnlikePost(dispatch, profile, postId) {
     const postData = postSnap.data();
     const userSnap = await getSingleDoc("users", userId);
     const userData = userSnap.data();
+    console.log(postData, "postData", userData, "userData");
     let alreadyLiked = postData.likes.filter((id) => id === userId);
     const postRef = doc(firestore, "posts", postId);
     const userRef = doc(firestore, "users", userId);
     let postsUpdatedLikesId = [];
     let userUpdatedLikesId = [];
     if (alreadyLiked.length) {
-      postsUpdatedLikesId = postData.likes.filter((id) => id !== userId);
-      userUpdatedLikesId = userData.likedPosts.filter((id) => id !== postId);
+      postsUpdatedLikesId = postData?.likes.filter((id) => id !== userId);
+      userUpdatedLikesId = userData?.likedPosts.filter((id) => id !== postId);
     } else {
       postsUpdatedLikesId =
-        postData.likes.length > 0 ? [...postData.likes, userId] : [userId];
+        postData.likes.length > 0 ? [...postData?.likes, userId] : [userId];
       userUpdatedLikesId =
-        userData.likedPosts.length > 0
+        userData?.likedPosts?.length > 0
           ? [...userData.likedPosts, postId]
           : [postId];
     }
@@ -391,7 +397,7 @@ export async function handleLikeUnlikePost(dispatch, profile, postId) {
     stateUpdater(dispatch, userId);
     return;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return errorHandler(error);
   }
 }
