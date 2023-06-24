@@ -5,12 +5,20 @@ import { RiChat1Line } from "react-icons/ri";
 import { FiSend } from "react-icons/fi";
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
 import { CommentModal } from '../../';
+import { useFirebase } from '../../../firebase';
 
 
 const MiddleBox = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(true);
-  const [isSaved, setIsSaved] = useState(true);
+  const firebase = useFirebase();
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [isComment, setIsComment] = useState(false);
+
+  const likeHandler = () => {
+    setIsLiked(!isLiked);
+    firebase.likePostHandler(post.postId);
+    
+  }
 
   const openComment = () => {
     setIsComment(!isComment);
@@ -33,9 +41,10 @@ const MiddleBox = ({ post }) => {
               <div className="flex items-center justify-between mt-2 ">
                 <div className="flex items-center gap-3">
                   {isLiked ? (
-                    <AiFillHeart className="text-red-600" size={28} />
+                    <AiFillHeart onClick={likeHandler} className="text-red-600" size={28} />
                   ) : (
                     <AiOutlineHeart
+                      onClick={likeHandler}
                       className="dark:filter dark:invert"
                       size={28}
                     />

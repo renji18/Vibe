@@ -28,3 +28,23 @@ export const commentOnPost = (dispatch, profile, postId, comment) => {
     comment,
   };
 };
+
+// Like post
+export const likePost = (dispatch, profile, postId) => {
+  return {
+    type: actionType.LIKE_POST,
+    dispatch,
+    profile,
+    postId,
+  };
+};
+
+// Save Post
+export const savePost = (dispatch, profile, postId) => {
+  return {
+    type: actionType.SAVE_POST,
+    dispatch,
+    profile,
+    postId,
+  };
+};
