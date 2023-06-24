@@ -8,8 +8,8 @@ import { CommentModal } from '../../';
 
 
 const MiddleBox = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isLiked, setIsLiked] = useState(true);
+  const [isSaved, setIsSaved] = useState(true);
   const [isComment, setIsComment] = useState(false);
 
   const openComment = () => {
@@ -72,15 +72,23 @@ const MiddleBox = ({ post }) => {
                     View all {post.comments.length} comments
                   </p>
                 )}
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  className="w-full text-sm mt-2 bg-transparent outline-none dark:text-white text-my-black-1"
-                />
+                <div className="flex items-center">
+                  <textarea
+                    placeholder="Add a comment..."
+                    className="w-full text-sm mt-2 bg-transparent outline-none dark:text-white text-my-black-1"
+                  />
+                  <p className="dark:text-my-gray-1 text-my-black-1 font-medium cursor-pointer text-xs">
+                    POST
+                  </p>
+                </div>
               </div>
               {isComment && (
                 <div className="flex justify-center items-center">
-                  <CommentModal desc={post?.description} userName={post?.user} comments={post?.comments} />
+                  <CommentModal
+                    desc={post?.description}
+                    userName={post?.user}
+                    comments={post?.comments}
+                  />
                 </div>
               )}
             </div>
