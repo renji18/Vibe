@@ -1,7 +1,7 @@
 import * as actionType from "./actionTypes";
 
 // create user post
-export const createUserPost = (dispatch,profile, postData) => {
+export const createUserPost = (dispatch, profile, postData) => {
   return {
     type: actionType.CREATE_POST,
     dispatch,
@@ -15,5 +15,16 @@ export const getAllPosts = (data) => {
   return {
     type: actionType.GET_POSTS,
     data,
+  };
+};
+
+// comment on post
+export const commentOnPost = (dispatch, profile, postId, comment) => {
+  return {
+    type: actionType.COMMENT_ON_POST,
+    dispatch,
+    profile,
+    postId,
+    comment,
   };
 };

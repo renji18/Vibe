@@ -1,12 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  handleAuthStateChange,
-  handleGetUserNamesData,
-} from "./utility";
+import { handleAuthStateChange, handleGetUserNamesData } from "./utility";
 import { firebaseAuth } from "./config";
 import {
+  commentOnPost,
   createUserPost,
   registerLoginSignOutUser,
   saveUserData,
@@ -59,6 +57,11 @@ export const FirebaseProvider = (props) => {
     dispatch(createUserPost(dispatch, profile, postData));
   };
 
+  // comment on post
+  const commentOnPostHandler = async (postId, comment) => {
+    dispatch(commentOnPost(dispatch, profile, postId, comment));
+  };
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -67,6 +70,7 @@ export const FirebaseProvider = (props) => {
         saveUserDataOnRegistration,
         signOutUser,
         createUserPostHandler,
+        commentOnPostHandler,
       }}
     >
       {props.children}

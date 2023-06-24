@@ -1,6 +1,7 @@
 import { put } from "redux-saga/effects";
 import * as actionCreators from "../actions";
 import {
+  commentOnPostSagaAsyncHandler,
   createUserPostSagaAsyncHandler,
 } from "./services";
 import { toast } from "react-toastify";
@@ -17,6 +18,20 @@ export function* createUserPostSagaCall(action) {
     // yield put(actionCreators.toggleFirebaseLoader(false));
   } catch (error) {
     // yield put(actionCreators.toggleFirebaseLoader(false));
+    toast.error(error);
+  }
+}
+
+// comment on post saga
+export function* commentOnPostSagaCall(action) {
+  try {
+    yield commentOnPostSagaAsyncHandler(
+      action?.dispatch,
+      action?.profile,
+      action?.postId,
+      action?.comment
+    );
+  } catch (error) {
     toast.error(error);
   }
 }
