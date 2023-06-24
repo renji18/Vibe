@@ -7,6 +7,7 @@ import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
 import { CommentModal } from '../../';
 import { useFirebase } from '../../../firebase';
 import { useSelector } from 'react-redux';
+import { FaUser } from 'react-icons/fa';
 
 
 const MiddleBox = ({ post }) => {
@@ -15,7 +16,7 @@ const MiddleBox = ({ post }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isComment, setIsComment] = useState(false);
 
-  const { likedPosts } = useSelector(state => state.userData.profile);
+  const { likedPosts, savedPosts } = useSelector(state => state.userData.profile);
 
  
 
@@ -27,13 +28,22 @@ const MiddleBox = ({ post }) => {
        console.log(id, "id");
        return lik.length > 0 ? setIsLiked(true) : setIsLiked(false);
      };
+     const handleSavedPost = (id) => {
+       const sav = savedPosts.filter((post) => post === id);
+
+       return sav.length > 0 ? setIsSaved(true) : setIsSaved(false);
+     };
    handleLikedPost(post.postId)
-  }, [likedPosts, post.postId])
+   handleSavedPost(post.postId);
+  }, [likedPosts, post.postId, savedPosts])
   
 
   const likeHandler = () => {
-    setIsLiked(!isLiked);
     firebase.likePostHandler(post.postId);
+  }
+
+  const saveHandler = () => {
+    firebase.savePostHandler(post.postId);
   }
 
   const openComment = () => {
@@ -47,17 +57,39 @@ const MiddleBox = ({ post }) => {
         <div>
           {post.content.map((cont, key) => (
             <div key={key} className="mt-4">
-              <div className=" p-4 flex justify-between items-center">
-                <div className=" dark:text-white font-semibold cursor-pointer">
-                  {post.user}
+              <div className=" py-4 px-1 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 translate-y-0.5 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center">
+                    {post?.userImg ? (
+                      <img
+                        src={post.userImg}
+                        alt={post.user}
+                        className="rounded-full h-full scale-95"
+                      />
+                    ) : (
+                      <FaUser className="dark:filter-none invert w-3 h-3" />
+                    )}
+                  </div>
+                  <div className=" dark:text-white font-semibold cursor-pointer">
+                    {post.user}
+                  </div>
                 </div>
                 <BsThreeDots className="dark:filter dark:invert" size={20} />
               </div>
-              <img src={cont?.content} alt="post" className="w-full" />
+              <img
+                src={cont?.content}
+                alt="post"
+                className="w-full"
+                onDoubleClick={likeHandler}
+              />
               <div className="flex items-center justify-between mt-2 ">
                 <div className="flex items-center gap-3">
                   {isLiked ? (
-                    <AiFillHeart onClick={likeHandler} className="cursor-pointer text-red-600" size={28} />
+                    <AiFillHeart
+                      onClick={likeHandler}
+                      className="cursor-pointer text-red-600"
+                      size={28}
+                    />
                   ) : (
                     <AiOutlineHeart
                       onClick={likeHandler}
@@ -65,17 +97,28 @@ const MiddleBox = ({ post }) => {
                       size={28}
                     />
                   )}
-                  <RiChat1Line className="cursor-pointer dark:filter dark:invert" size={28} />
-                  <FiSend className="cursor-pointer dark:filter dark:invert" size={25} />
+                  <RiChat1Line
+                    className="cursor-pointer dark:filter dark:invert"
+                    size={28}
+                  />
+                  <FiSend
+                    className="cursor-pointer dark:filter dark:invert"
+                    size={25}
+                  />
                 </div>
                 <div>
                   {isSaved ? (
                     <BsFillBookmarkFill
                       className="cursor-pointer dark:filter dark:invert"
                       size={23}
+                      onClick={saveHandler}
                     />
                   ) : (
-                    <BsBookmark className="cursor-pointer dark:filter dark:invert" size={23} />
+                    <BsBookmark
+                      className="cursor-pointer dark:filter dark:invert"
+                      size={23}
+                      onClick={saveHandler}
+                    />
                   )}
                 </div>
               </div>
