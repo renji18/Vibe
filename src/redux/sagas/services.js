@@ -1,4 +1,5 @@
 import {
+  handleCommentOnPost,
   handleCreateUserPost,
   handleRegistration,
   handleSaveRegistrationData,
@@ -49,5 +50,11 @@ export async function saveUserDataSagaAsyncHandler(
 // create user post handler
 export async function createUserPostSagaAsyncHandler(dispatch, profile, postData) {
   const res = await handleCreateUserPost(dispatch, profile, postData);
+  return res;
+}
+
+// comment on post handler
+export async function commentOnPostSagaAsyncHandler(dispatch, profile, postId, comment){
+  const res = await handleCommentOnPost(dispatch, profile, postId, comment)
   return res;
 }

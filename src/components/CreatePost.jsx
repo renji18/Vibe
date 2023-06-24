@@ -71,20 +71,19 @@ const CreatePost = () => {
   };
 
   const handleCreatePost = () => {
-    let flag1 = false;
-    postData.map((i) => {
-      if (!i.file) return (flag1 = true);
-      return flag1;
-    });
-    if (flag1) return toast.error("Proper Data Not Provided");
-    let flag2 = false;
-    postData.map((i) => {
-      if (i.duration > 60) return (flag2 = true);
-      return flag2;
-    });
-    if (flag2) return toast.error("Video Too Long");
-
-    firebase.createUserPostHandler({ postData, desc });
+    // let flag1 = false;
+    // postData.map((i) => {
+    //   if (!i.file) return (flag1 = true);
+    //   return flag1;
+    // });
+    // if (flag1) return toast.error("Proper Data Not Provided");
+    // let flag2 = false;
+    // postData.map((i) => {
+    //   if (i.duration > 60) return (flag2 = true);
+    //   return flag2;
+    // });
+    // if (flag2) return toast.error("Video Too Long");
+    firebase.commentOnPostHandler();
   };
 
   const handleShowModal = () => {
@@ -123,7 +122,9 @@ const CreatePost = () => {
               />
             </div>
           ))}
-          <button className="bg-white" onClick={handleAddInputTag}>Add More Content</button>
+          <button className="bg-white" onClick={handleAddInputTag}>
+            Add More Content
+          </button>
         </div>
         <div className=" w-1/2 md:w-full md:h-1/2 rounded-3xl">Context</div>
         <input

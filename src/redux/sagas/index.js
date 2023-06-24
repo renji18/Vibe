@@ -24,4 +24,8 @@ export default function* mySaga() {
     actionTypes.THEME_SWITCH,
     userMiddleware.themeSwitchSagaCall
   );
+  yield takeLatest(
+    actionTypes.COMMENT_ON_POST,
+    postMiddleware.commentOnPostSagaCall
+  );
 }

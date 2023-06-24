@@ -195,7 +195,6 @@ export async function handleSaveRegistrationData(
       profilePic: profilePicUrl,
       personalPosts: [], // saves post ids (different collection for all posts)
       likedPosts: [], // saves post ids (different collection for all posts)
-      commentedPosts: [], // saves post ids (different collection for all posts)
       savedPosts: [], // saves post ids (different collection for all posts)
       friends: [], // saves user ids
       chat: [], // [{user id, data: [msg]}, {userId, data: [msg]}]
@@ -424,4 +423,50 @@ export async function handleSaveUnsavePost(dispatch, profile) {
 }
 
 // handle comment on post
+export async function handleCommentOnPost(dispatch, profile) {
+  try {
+    let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
+    let comment = "Super osum photu"; // we will pass the comment of the post, it's not connected yet
+    if (profile === null) {
+      return toast.warn("Please login first");
+    }
+
+    function df() {
+      return String(new Date(Date.now())).split(" ");
+    }
+
+    const commentObject = {
+      userId: profile?.uid,
+      userName: profile?.userName,
+      comment,
+      id: Date.now(),
+      createdOn: {
+        dateString: `${df()[2]} ${df()[1]}, ${df()[3]}`,
+        dayString: `${df()[0]}`,
+        timeString: `${df()[4]}`,
+        timeStamp: Date.now(),
+      },
+    };
+
+    const postSnap = await getSingleDoc("posts", postId);
+    const postData = postSnap.data();
+    const postRef = doc(firestore, "posts", postId);
+    const postsUpdatedComments =
+      postData.comments.length > 0
+        ? [...postData.comments, commentObject]
+        : [commentObject];
+    await updateDoc(postRef, {
+      comments: postsUpdatedComments,
+    });
+    stateUpdater(dispatch, profile?.uid);
+    return;
+  } catch (error) {
+    return errorHandler(error);
+  }
+}
+
+// handle delete comment from post
+export async function handleDeleteComment(dispatch, profile) {}
+
 // handle delete post
+export async function handleDeletePost(dispatch, profile) {}
