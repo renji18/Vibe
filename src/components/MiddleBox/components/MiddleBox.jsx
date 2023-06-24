@@ -6,6 +6,7 @@ import { FiSend } from "react-icons/fi";
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
 import { CommentModal } from '../../';
 import { useFirebase } from '../../../firebase';
+import { useSelector } from 'react-redux';
 
 
 const MiddleBox = ({ post }) => {
@@ -14,11 +15,25 @@ const MiddleBox = ({ post }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isComment, setIsComment] = useState(false);
 
-  const likeHandler = () => {
+  const { likedPosts } = useSelector(state => state.userData.profile);
 
+ 
+
+  useEffect(() => {
+     const handleLikedPost = (id) => {
+       const lik = likedPosts.filter((post) => post === id);
+
+       console.log(lik, "lik");
+       console.log(id, "id");
+       return lik.length > 0 ? setIsLiked(true) : setIsLiked(false);
+     };
+   handleLikedPost(post.postId)
+  }, [likedPosts, post.postId])
+  
+
+  const likeHandler = () => {
     setIsLiked(!isLiked);
     firebase.likePostHandler(post.postId);
-    
   }
 
   const openComment = () => {
@@ -42,25 +57,25 @@ const MiddleBox = ({ post }) => {
               <div className="flex items-center justify-between mt-2 ">
                 <div className="flex items-center gap-3">
                   {isLiked ? (
-                    <AiFillHeart onClick={likeHandler} className="text-red-600" size={28} />
+                    <AiFillHeart onClick={likeHandler} className="cursor-pointer text-red-600" size={28} />
                   ) : (
                     <AiOutlineHeart
                       onClick={likeHandler}
-                      className="dark:filter dark:invert"
+                      className="cursor-pointer dark:filter dark:invert"
                       size={28}
                     />
                   )}
-                  <RiChat1Line className="dark:filter dark:invert" size={28} />
-                  <FiSend className="dark:filter dark:invert" size={25} />
+                  <RiChat1Line className="cursor-pointer dark:filter dark:invert" size={28} />
+                  <FiSend className="cursor-pointer dark:filter dark:invert" size={25} />
                 </div>
                 <div>
                   {isSaved ? (
                     <BsFillBookmarkFill
-                      className="dark:filter dark:invert"
+                      className="cursor-pointer dark:filter dark:invert"
                       size={23}
                     />
                   ) : (
-                    <BsBookmark className="dark:filter dark:invert" size={23} />
+                    <BsBookmark className="cursor-pointer dark:filter dark:invert" size={23} />
                   )}
                 </div>
               </div>
