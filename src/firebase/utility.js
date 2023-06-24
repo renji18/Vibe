@@ -229,7 +229,6 @@ export async function hanldeSignOut(profile) {
 // handle create post
 export async function handleCreateUserPost(dispatch, profile, postData) {
   try {
-    console.log(postData);
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -264,7 +263,6 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
       description: postData?.desc,
     };
     const res = await addDoc(collection(firestore, "posts"), data);
-    console.log(res);
     toast.success("Post created successfully.");
     const userRef = doc(firestore, "users", profile.uid);
     await updateDoc(userRef, {
@@ -358,7 +356,6 @@ export async function handleUserNameExist(value, userNamesArray) {
 // handle like/unlike post
 export async function handleLikeUnlikePost(dispatch, profile, postId) {
   try {
-    // let postId = "3a0BWBkU5oGUV96GEDGy"; // we will pass the id of the post, it's not connected yet
     console.log(profile, postId, "postid, profile");
     if (profile === null) {
       return toast.warn("Please login first");
@@ -368,7 +365,6 @@ export async function handleLikeUnlikePost(dispatch, profile, postId) {
     const postData = postSnap.data();
     const userSnap = await getSingleDoc("users", userId);
     const userData = userSnap.data();
-    console.log(postData, "postData", userData, "userData");
     let alreadyLiked = postData.likes.filter((id) => id === userId);
     const postRef = doc(firestore, "posts", postId);
     const userRef = doc(firestore, "users", userId);
@@ -385,9 +381,6 @@ export async function handleLikeUnlikePost(dispatch, profile, postId) {
           ? [...userData.likedPosts, postId]
           : [postId];
     }
-    console.log(postsUpdatedLikesId);
-    console.log(userUpdatedLikesId);
-
     await updateDoc(postRef, {
       likes: postsUpdatedLikesId,
     });
