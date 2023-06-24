@@ -15,6 +15,7 @@ const MiddleBox = ({ post }) => {
   const [isComment, setIsComment] = useState(false);
 
   const likeHandler = () => {
+
     setIsLiked(!isLiked);
     firebase.likePostHandler(post.postId);
     
