@@ -6,7 +6,9 @@ import { firebaseAuth } from "./config";
 import {
   commentOnPost,
   createUserPost,
+  likePost,
   registerLoginSignOutUser,
+  savePost,
   saveUserData,
 } from "../redux/actions";
 
@@ -62,6 +64,16 @@ export const FirebaseProvider = (props) => {
     dispatch(commentOnPost(dispatch, profile, postId, comment));
   };
 
+  // save post
+  const savePostHandler = async (postId) => {
+    dispatch(savePost(dispatch, profile, postId));
+  };
+
+  // like post
+  const likePostHandler = async (postId) => {
+    dispatch(likePost(dispatch, profile, postId));
+  };
+
   return (
     <FirebaseContext.Provider
       value={{
@@ -71,6 +83,8 @@ export const FirebaseProvider = (props) => {
         signOutUser,
         createUserPostHandler,
         commentOnPostHandler,
+        savePostHandler,
+        likePostHandler,
       }}
     >
       {props.children}

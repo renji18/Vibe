@@ -18,4 +18,8 @@ export const THEME_SWITCH = "THEME_SWITCH";
 
 export const UPDATE_THEME = "UPDATE_THEME";
 
-export const COMMENT_ON_POST = 'COMMENT_ON_POST'
+export const COMMENT_ON_POST = "COMMENT_ON_POST";
+
+export const LIKE_POST = "LIKE_POST";
+
+export const SAVE_POST = "SAVE_POST";

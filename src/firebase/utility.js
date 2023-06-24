@@ -351,9 +351,9 @@ export async function handleUserNameExist(value, userNamesArray) {
 }
 
 // handle like/unlike post
-export async function handleLikeUnlikePost(dispatch, profile) {
+export async function handleLikeUnlikePost(dispatch, profile, postId) {
   try {
-    let postId = "3a0BWBkU5oGUV96GEDGy"; // we will pass the id of the post, it's not connected yet
+    // let postId = "3a0BWBkU5oGUV96GEDGy"; // we will pass the id of the post, it's not connected yet
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -392,9 +392,9 @@ export async function handleLikeUnlikePost(dispatch, profile) {
 }
 
 // handle save/unsave post
-export async function handleSaveUnsavePost(dispatch, profile) {
+export async function handleSaveUnsavePost(dispatch, profile, postId) {
   try {
-    let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
+    // let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -423,10 +423,10 @@ export async function handleSaveUnsavePost(dispatch, profile) {
 }
 
 // handle comment on post
-export async function handleCommentOnPost(dispatch, profile) {
+export async function handleCommentOnPost(dispatch, profile, postId, comment) {
   try {
-    let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
-    let comment = "Super osum photu"; // we will pass the comment of the post, it's not connected yet
+    // let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
+    // let comment = "Super osum photu"; // we will pass the comment of the post, it's not connected yet
     if (profile === null) {
       return toast.warn("Please login first");
     }

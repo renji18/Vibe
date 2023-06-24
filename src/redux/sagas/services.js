@@ -1,8 +1,10 @@
 import {
   handleCommentOnPost,
   handleCreateUserPost,
+  handleLikeUnlikePost,
   handleRegistration,
   handleSaveRegistrationData,
+  handleSaveUnsavePost,
   handleSignIn,
   hanldeSignOut,
 } from "../../firebase/utility";
@@ -48,13 +50,42 @@ export async function saveUserDataSagaAsyncHandler(
 }
 
 // create user post handler
-export async function createUserPostSagaAsyncHandler(dispatch, profile, postData) {
+export async function createUserPostSagaAsyncHandler(
+  dispatch,
+  profile,
+  postData
+) {
   const res = await handleCreateUserPost(dispatch, profile, postData);
   return res;
 }
 
 // comment on post handler
-export async function commentOnPostSagaAsyncHandler(dispatch, profile, postId, comment){
-  const res = await handleCommentOnPost(dispatch, profile, postId, comment)
+export async function commentOnPostSagaAsyncHandler(
+  dispatch,
+  profile,
+  postId,
+  comment
+) {
+  const res = await handleCommentOnPost(dispatch, profile, postId, comment);
+  return res;
+}
+
+// like unlike post handler
+export async function likeUnlikePostSagaAsyncHandler(
+  dispatch,
+  profile,
+  postId
+) {
+  const res = await handleLikeUnlikePost(dispatch, profile, postId);
+  return res;
+}
+
+// save unsave post handler
+export async function saveUnsavePostSagaAsyncHandler(
+  dispatch,
+  profile,
+  postId
+) {
+  const res = await handleSaveUnsavePost(dispatch, profile, postId);
   return res;
 }

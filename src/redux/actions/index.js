@@ -12,4 +12,10 @@ export {
   updateTheme,
 } from "./miscellaneous";
 
-export { createUserPost, getAllPosts, commentOnPost } from "./postActions";
+export {
+  createUserPost,
+  getAllPosts,
+  commentOnPost,
+  likePost,
+  savePost,
+} from "./postActions";

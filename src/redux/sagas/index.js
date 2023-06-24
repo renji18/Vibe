@@ -28,4 +28,12 @@ export default function* mySaga() {
     actionTypes.COMMENT_ON_POST,
     postMiddleware.commentOnPostSagaCall
   );
+  yield takeLatest(
+    actionTypes.LIKE_POST,
+    postMiddleware.likeUnlikePostSagaCall
+  );
+  yield takeLatest(
+    actionTypes.SAVE_POST,
+    postMiddleware.saveUnsavePostSagaCall
+  );
 }

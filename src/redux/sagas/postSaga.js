@@ -3,6 +3,8 @@ import * as actionCreators from "../actions";
 import {
   commentOnPostSagaAsyncHandler,
   createUserPostSagaAsyncHandler,
+  likeUnlikePostSagaAsyncHandler,
+  saveUnsavePostSagaAsyncHandler,
 } from "./services";
 import { toast } from "react-toastify";
 
@@ -30,6 +32,32 @@ export function* commentOnPostSagaCall(action) {
       action?.profile,
       action?.postId,
       action?.comment
+    );
+  } catch (error) {
+    toast.error(error);
+  }
+}
+
+// like unlike post saga
+export function* likeUnlikePostSagaCall(action) {
+  try {
+    yield likeUnlikePostSagaAsyncHandler(
+      action?.dispatch,
+      action?.profile,
+      action?.postId
+    );
+  } catch (error) {
+    toast.error(error);
+  }
+}
+
+// save unsave post saga
+export function* saveUnsavePostSagaCall(action) {
+  try {
+    yield saveUnsavePostSagaAsyncHandler(
+      action?.dispatch,
+      action?.profile,
+      action?.postId
     );
   } catch (error) {
     toast.error(error);
