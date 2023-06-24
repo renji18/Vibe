@@ -1,5 +1,5 @@
 import React from 'react'
-import MiddleBox from './MiddleBox';
+import MiddleBox from './components/MiddleBox';
 import { useSelector } from "react-redux";
 
 const MiddleSection = () => {

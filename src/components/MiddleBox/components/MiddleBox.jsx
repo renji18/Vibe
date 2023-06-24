@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsThreeDots } from "react-icons/bs";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { RiChat1Line } from "react-icons/ri";
 import { FiSend } from "react-icons/fi";
-import { BiBookmark } from "react-icons/bi";
+import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
+import { CommentModal } from '../../';
 
 
 const MiddleBox = ({ post }) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isComment, setIsComment] = useState(false);
+
+  const openComment = () => {
+    setIsComment(!isComment);
+  }
+
    
   return (
     <div className="mt-2">
@@ -23,15 +32,26 @@ const MiddleBox = ({ post }) => {
               <img src={cont?.content} alt="post" className="w-full" />
               <div className="flex items-center justify-between mt-2 ">
                 <div className="flex items-center gap-3">
-                  <AiOutlineHeart
-                    className="dark:filter dark:invert"
-                    size={28}
-                  />
+                  {isLiked ? (
+                    <AiFillHeart className="text-red-600" size={28} />
+                  ) : (
+                    <AiOutlineHeart
+                      className="dark:filter dark:invert"
+                      size={28}
+                    />
+                  )}
                   <RiChat1Line className="dark:filter dark:invert" size={28} />
                   <FiSend className="dark:filter dark:invert" size={25} />
                 </div>
                 <div>
-                  <BiBookmark className="dark:filter dark:invert" size={25} />
+                  {isSaved ? (
+                    <BsFillBookmarkFill
+                      className="dark:filter dark:invert"
+                      size={23}
+                    />
+                  ) : (
+                    <BsBookmark className="dark:filter dark:invert" size={23} />
+                  )}
                 </div>
               </div>
               <div className="mt-1">
@@ -45,7 +65,10 @@ const MiddleBox = ({ post }) => {
                   )}
                 </div>
                 {post.comments && post.comments.length > 0 && (
-                  <p className="dark:text-my-gray-1 text-my-black-1 cursor-pointer mt-1 text-sm">
+                  <p
+                    onClick={openComment}
+                    className="dark:text-my-gray-1 text-my-black-1 cursor-pointer mt-1 text-sm"
+                  >
                     View all {post.comments.length} comments
                   </p>
                 )}
@@ -55,6 +78,11 @@ const MiddleBox = ({ post }) => {
                   className="w-full text-sm mt-2 bg-transparent outline-none dark:text-white text-my-black-1"
                 />
               </div>
+              {isComment && (
+                <div className="flex justify-center items-center">
+                  <CommentModal desc={post?.description} userName={post?.user} comments={post?.comments} />
+                </div>
+              )}
             </div>
           ))}
         </div>
