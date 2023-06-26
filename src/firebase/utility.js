@@ -6,6 +6,7 @@ import {
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -30,13 +31,10 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
         await handleAutoSignOut(docSnap.data());
         dispatch(getSingleUser(docSnap.data()));
         setUser(data);
-        const postRef = collection(firestore, "posts");
-        const gibberishPosts = await getDocs(postRef);
-        let posts = [];
-        gibberishPosts.forEach((post) => posts.push(post.data()));
-        dispatch(getAllPosts(posts));
+        await handleGetUserNamesData(dispatch);
       } else {
         dispatch(getSingleUser(null));
+        dispatch(getAllPosts(null));
       }
     } else {
       dispatch(getSingleUser(null));
@@ -48,17 +46,21 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
   }
 }
 
-// states updater
-async function stateUpdater(dispatch, uid) {
-  const docSnap = await getSingleDoc("users", uid);
-  dispatch(getSingleUser(docSnap.data()));
-  const postRef = collection(firestore, "posts");
-  const gibberishPosts = await getDocs(postRef);
-  let posts = [];
-  gibberishPosts.forEach((post) => posts.push(post.data()));
-  dispatch(getAllPosts(posts));
-  handleGetUserNamesData(dispatch);
-  return;
+// handle get usernames
+export async function handleGetUserNamesData(dispatch) {
+  try {
+    const userNameRef = collection(firestore, "users");
+    const gibberishUsers = await getDocs(userNameRef);
+    let users = [];
+    gibberishUsers.forEach((user) => users.push(user.data()));
+    let userNames = [];
+    users.forEach((user) => {
+      user.userName && userNames.push(user.userName);
+    });
+    dispatch(getUserNamesData(userNames));
+  } catch (error) {
+    return errorHandler(error);
+  }
 }
 
 // returns url for a provided image file
@@ -227,7 +229,7 @@ export async function hanldeSignOut(profile) {
 }
 
 // handle create post
-export async function handleCreateUserPost(dispatch, profile, postData) {
+export async function handleCreateUserPost(profile, postData) {
   try {
     if (profile === null) {
       return toast.warn("Please login first");
@@ -296,7 +298,7 @@ export async function handleCreateUserPost(dispatch, profile, postData) {
     await updateDoc(postRef, {
       postId: res.id,
     });
-    stateUpdater(dispatch, profile.uid);
+    return;
   } catch (error) {
     return errorHandler(error);
   }
@@ -323,23 +325,6 @@ export async function handleAutoSignOut(data) {
   }
 }
 
-// handle get usernames
-export async function handleGetUserNamesData(dispatch) {
-  try {
-    const userNameRef = collection(firestore, "users");
-    const gibberishUsers = await getDocs(userNameRef);
-    let users = [];
-    gibberishUsers.forEach((user) => users.push(user.data()));
-    let userNames = [];
-    users.forEach((user) => {
-      user.userName && userNames.push(user.userName);
-    });
-    dispatch(getUserNamesData(userNames));
-  } catch (error) {
-    return errorHandler(error);
-  }
-}
-
 // handle userNameExist
 export async function handleUserNameExist(value, userNamesArray) {
   try {
@@ -354,20 +339,16 @@ export async function handleUserNameExist(value, userNamesArray) {
 }
 
 // handle like/unlike post
-export async function handleLikeUnlikePost(dispatch, profile, postId) {
+export async function handleLikeUnlikePost(profile, post) {
   try {
-    console.log(profile, postId, "postid, profile");
     if (profile === null) {
       return toast.warn("Please login first");
     }
-    let userId = profile.uid;
-    const postSnap = await getSingleDoc("posts", postId);
-    const postData = postSnap.data();
-    const userSnap = await getSingleDoc("users", userId);
-    const userData = userSnap.data();
+    const postData = post;
+    const userData = profile;
+    const userId = profile.uid;
+    const postId = post.postId;
     let alreadyLiked = postData.likes.filter((id) => id === userId);
-    const postRef = doc(firestore, "posts", postId);
-    const userRef = doc(firestore, "users", userId);
     let postsUpdatedLikesId = [];
     let userUpdatedLikesId = [];
     if (alreadyLiked.length) {
@@ -381,13 +362,14 @@ export async function handleLikeUnlikePost(dispatch, profile, postId) {
           ? [...userData.likedPosts, postId]
           : [postId];
     }
+    const postRef = doc(firestore, "posts", postId);
+    const userRef = doc(firestore, "users", userId);
     await updateDoc(postRef, {
       likes: postsUpdatedLikesId,
     });
     await updateDoc(userRef, {
       likedPosts: userUpdatedLikesId,
     });
-    stateUpdater(dispatch, userId);
     return;
   } catch (error) {
     console.log(error);
@@ -396,15 +378,13 @@ export async function handleLikeUnlikePost(dispatch, profile, postId) {
 }
 
 // handle save/unsave post
-export async function handleSaveUnsavePost(dispatch, profile, postId) {
+export async function handleSaveUnsavePost(profile, postId) {
   try {
-    // let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
     if (profile === null) {
       return toast.warn("Please login first");
     }
     let userId = profile.uid;
-    const userSnap = await getSingleDoc("users", userId);
-    const userData = userSnap.data();
+    const userData = profile;
     let alreadySaved = userData.savedPosts.filter((id) => id === postId);
     const userRef = doc(firestore, "users", userId);
     let userUpdatedSavedId = [];
@@ -419,7 +399,6 @@ export async function handleSaveUnsavePost(dispatch, profile, postId) {
     await updateDoc(userRef, {
       savedPosts: userUpdatedSavedId,
     });
-    stateUpdater(dispatch, userId);
     return;
   } catch (error) {
     return errorHandler(error);
@@ -427,10 +406,8 @@ export async function handleSaveUnsavePost(dispatch, profile, postId) {
 }
 
 // handle comment on post
-export async function handleCommentOnPost(dispatch, profile, postId, comment) {
+export async function handleCommentOnPost(profile, post, comment) {
   try {
-    // let postId = "m7PGTgtTD8g0NvW3xOSK"; // we will pass the id of the post, it's not connected yet
-    // let comment = "Super osum photu"; // we will pass the comment of the post, it's not connected yet
     if (profile === null) {
       return toast.warn("Please login first");
     }
@@ -452,25 +429,56 @@ export async function handleCommentOnPost(dispatch, profile, postId, comment) {
       },
     };
 
-    const postSnap = await getSingleDoc("posts", postId);
-    const postData = postSnap.data();
-    const postRef = doc(firestore, "posts", postId);
+    const postData = post;
     const postsUpdatedComments =
-      postData.comments.length > 0
-        ? [...postData.comments, commentObject]
+      postData?.comments?.length > 0
+        ? [...postData?.comments, commentObject]
         : [commentObject];
+
+    const postRef = doc(firestore, "posts", post.postId);
     await updateDoc(postRef, {
       comments: postsUpdatedComments,
     });
-    stateUpdater(dispatch, profile?.uid);
     return;
   } catch (error) {
     return errorHandler(error);
   }
 }
 
-// handle delete comment from post
-export async function handleDeleteComment(dispatch, profile) {}
-
 // handle delete post
-export async function handleDeletePost(dispatch, profile) {}
+export async function handleDeletePost(profile, post) {
+  try {
+    if (profile === null) {
+      return toast.warn("Please login first");
+    }
+    if (profile.uid !== post.userId) {
+      return toast.error("You can't delete someone else' post");
+    }
+    await deleteDoc(doc(firestore, "posts", post.postId));
+    return toast.success("Post deleted success fully");
+  } catch (error) {
+    console.log(error);
+    return errorHandler(error);
+  }
+}
+
+// handle delete comment from post
+export async function handleDeleteComment(profile, post, comment) {
+  try {
+    if (profile === null) {
+      return toast.warn("Please login first");
+    }
+    if (profile.uid !== comment.userId || profile.uid !== post.userId) {
+      return toast.error("You can't delete this comment");
+    }
+    const updatedComments = post.comments.filter((c) => c.id !== comment.id);
+
+    const postRef = doc(firestore, "posts", post.postId);
+    await updateDoc(postRef, {
+      comments: updatedComments,
+    });
+    return;
+  } catch (error) {
+    return errorHandler(error);
+  }
+}

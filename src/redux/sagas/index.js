@@ -36,4 +36,9 @@ export default function* mySaga() {
     actionTypes.SAVE_POST,
     postMiddleware.saveUnsavePostSagaCall
   );
+  yield takeLatest(actionTypes.DELETE_POST, postMiddleware.deletePostSagaCall);
+  yield takeLatest(
+    actionTypes.DELETE_POST_COMMENT,
+    postMiddleware.deletePostCommentSagaCall
+  );
 }

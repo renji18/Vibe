@@ -18,4 +18,6 @@ export {
   commentOnPost,
   likePost,
   savePost,
+  deletePost,
+  deletePostComment,
 } from "./postActions";

@@ -1,22 +1,20 @@
 import { put } from "redux-saga/effects";
 import * as actionCreators from "../actions";
-import {
-  commentOnPostSagaAsyncHandler,
-  createUserPostSagaAsyncHandler,
-  likeUnlikePostSagaAsyncHandler,
-  saveUnsavePostSagaAsyncHandler,
-} from "./services";
 import { toast } from "react-toastify";
+import {
+  handleCommentOnPost,
+  handleCreateUserPost,
+  handleDeleteComment,
+  handleDeletePost,
+  handleLikeUnlikePost,
+  handleSaveUnsavePost,
+} from "../../firebase/utility";
 
 // create user post saga
 export function* createUserPostSagaCall(action) {
   try {
     // yield put(actionCreators.toggleFirebaseLoader(true));
-    yield createUserPostSagaAsyncHandler(
-      action.dispatch,
-      action.profile,
-      action.postData
-    );
+    yield handleCreateUserPost(action.profile, action.postData);
     // yield put(actionCreators.toggleFirebaseLoader(false));
   } catch (error) {
     // yield put(actionCreators.toggleFirebaseLoader(false));
@@ -27,12 +25,7 @@ export function* createUserPostSagaCall(action) {
 // comment on post saga
 export function* commentOnPostSagaCall(action) {
   try {
-    yield commentOnPostSagaAsyncHandler(
-      action?.dispatch,
-      action?.profile,
-      action?.postId,
-      action?.comment
-    );
+    yield handleCommentOnPost(action?.profile, action?.post, action?.comment);
   } catch (error) {
     toast.error(error);
   }
@@ -41,11 +34,7 @@ export function* commentOnPostSagaCall(action) {
 // like unlike post saga
 export function* likeUnlikePostSagaCall(action) {
   try {
-    yield likeUnlikePostSagaAsyncHandler(
-      action?.dispatch,
-      action?.profile,
-      action?.postId
-    );
+    yield handleLikeUnlikePost(action?.profile, action?.post);
   } catch (error) {
     toast.error(error);
   }
@@ -54,11 +43,25 @@ export function* likeUnlikePostSagaCall(action) {
 // save unsave post saga
 export function* saveUnsavePostSagaCall(action) {
   try {
-    yield saveUnsavePostSagaAsyncHandler(
-      action?.dispatch,
-      action?.profile,
-      action?.postId
-    );
+    yield handleSaveUnsavePost(action?.profile, action?.postId);
+  } catch (error) {
+    toast.error(error);
+  }
+}
+
+// delete post saga
+export function* deletePostSagaCall(action) {
+  try {
+    yield handleDeletePost(action?.profile, action?.post);
+  } catch (error) {
+    toast.error(error);
+  }
+}
+
+// delete post comment saga
+export function* deletePostCommentSagaCall(action) {
+  try {
+    yield handleDeleteComment(action?.profile, action?.post, action?.comment);
   } catch (error) {
     toast.error(error);
   }
