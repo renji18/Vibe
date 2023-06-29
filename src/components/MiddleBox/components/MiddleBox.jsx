@@ -32,9 +32,10 @@ const MiddleBox = ({ post }) => {
     };
     handleLikedPost(post.postId);
     handleSavedPost(post.postId);
-  }, [likedPosts, post.postId, savedPosts]);
+  }, [post.postId, savedPosts]);
 
   const likeHandler = () => {
+    setIsLiked(!isLiked);
     firebase.likePostHandler(post);
   };
 
@@ -148,6 +149,7 @@ const MiddleBox = ({ post }) => {
                 <div className="flex items-center">
                   <textarea
                     placeholder="Add a comment..."
+                    value={commentText}
                     onChange={commentChangeHandler}
                     className="w-full text-sm mt-2 bg-transparent outline-none dark:text-white text-my-black-1"
                   />
