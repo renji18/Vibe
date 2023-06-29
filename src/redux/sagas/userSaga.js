@@ -1,31 +1,29 @@
 import { put, takeEvery } from "redux-saga/effects";
 import * as actionType from "../actions/actionTypes";
 import * as actionCreators from "../actions";
-import {
-  registerLoginSignOutSagaAsyncHandler,
-  saveUserDataSagaAsyncHandler,
-} from "./services";
 import { toast } from "react-toastify";
-
+import {
+  handleRegistration,
+  handleSaveRegistrationData,
+  handleSignIn,
+  hanldeSignOut,
+} from "../../firebase/utility";
 
 // Simple main api loader
 export function* mainLoaderSagaCall(action) {
   yield put(actionCreators.toggleMainLoader(false));
 }
 
-// Simple main api loader
+// theme switch
 export function* themeSwitchSagaCall(action) {
   yield put(actionCreators.themeSwitchAction(action.data));
 }
 
 function* updateThemeSaga(action) {
   try {
-    // Perform any additional logic or API calls if needed
-    // Here, we simply put the theme update action in the store
     yield put({ type: actionType.THEME_SWITCH, data: action.isDarkTheme });
   } catch (error) {
-    // Handle any errors
-    console.error("Error updating theme:", error);
+    toast.error(error);
   }
 }
 
@@ -37,13 +35,24 @@ export function* watchThemeSaga() {
 export function* registerLoginSignOutSagaCall(action) {
   try {
     yield put(actionCreators.toggleFirebaseLoader(true));
-    yield registerLoginSignOutSagaAsyncHandler(
-      action.method,
-      action.profile,
-      action.email,
-      action.password,
-      action.dispatch
-    );
+    if (action?.method === "register") {
+      yield handleRegistration(
+        action?.profile,
+        action?.email,
+        action?.password
+      );
+    } else if (action?.method === "login") {
+      yield handleSignIn(
+        action?.dispatch,
+        action?.profile,
+        action?.email,
+        action?.password
+      );
+    } else if (action?.method === "signout") {
+      yield hanldeSignOut(action?.profile);
+    } else {
+      return "NO METHOD FOUND";
+    }
     yield put(actionCreators.toggleFirebaseLoader(false));
   } catch (error) {
     yield put(actionCreators.toggleFirebaseLoader(false));
@@ -55,7 +64,7 @@ export function* registerLoginSignOutSagaCall(action) {
 export function* saveUserDataSagaCall(action) {
   try {
     yield put(actionCreators.toggleFirebaseLoader(true));
-    yield saveUserDataSagaAsyncHandler(
+    yield handleSaveRegistrationData(
       action.profile,
       action.userData,
       action.user,
@@ -68,5 +77,3 @@ export function* saveUserDataSagaCall(action) {
     toast.error(error);
   }
 }
-
-

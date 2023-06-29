@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { RiChat1Line } from "react-icons/ri";
 import { FiSend } from "react-icons/fi";
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
-import { CommentModal } from '../../';
-import { useFirebase } from '../../../firebase';
-import { useSelector } from 'react-redux';
-import { FaUser } from 'react-icons/fa';
-
+import { CommentModal } from "../../";
+import { useFirebase } from "../../../firebase";
+import { useSelector } from "react-redux";
+import { FaUser } from "react-icons/fa";
 
 const MiddleBox = ({ post }) => {
   const firebase = useFirebase();
@@ -17,50 +16,45 @@ const MiddleBox = ({ post }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isComment, setIsComment] = useState(false);
 
-  const { likedPosts, savedPosts } = useSelector(state => state.userData.profile);
-
- 
+  const { likedPosts, savedPosts } = useSelector(
+    (state) => state.userData.profile
+  );
 
   useEffect(() => {
-     const handleLikedPost = (id) => {
-       const lik = likedPosts.filter((post) => post === id);
+    const handleLikedPost = (id) => {
+      const lik = likedPosts.filter((post) => post === id);
+      return lik.length > 0 ? setIsLiked(true) : setIsLiked(false);
+    };
+    const handleSavedPost = (id) => {
+      const sav = savedPosts.filter((post) => post === id);
 
-       console.log(lik, "lik");
-       console.log(id, "id");
-       return lik.length > 0 ? setIsLiked(true) : setIsLiked(false);
-     };
-     const handleSavedPost = (id) => {
-       const sav = savedPosts.filter((post) => post === id);
-
-       return sav.length > 0 ? setIsSaved(true) : setIsSaved(false);
-     };
-   handleLikedPost(post.postId)
-   handleSavedPost(post.postId);
-  }, [likedPosts, post.postId, savedPosts])
-  
+      return sav.length > 0 ? setIsSaved(true) : setIsSaved(false);
+    };
+    handleLikedPost(post.postId);
+    handleSavedPost(post.postId);
+  }, [likedPosts, post.postId, savedPosts]);
 
   const likeHandler = () => {
-    firebase.likePostHandler(post.postId);
-  }
+    firebase.likePostHandler(post);
+  };
 
   const saveHandler = () => {
     firebase.savePostHandler(post.postId);
-  }
+  };
 
-  const   commentHandler = (comment) => {
-    firebase.commentOnPostHandler(post.postId, comment);
+  const commentHandler = (comment) => {
+    firebase.commentOnPostHandler(post, comment);
     setCommentText("");
-  }
+  };
 
   const commentChangeHandler = (e) => {
     setCommentText(e.target.value);
-  }
+  };
 
   const openComment = () => {
     setIsComment(!isComment);
-  }
+  };
 
-   
   return (
     <div className="mt-2">
       {post.content && (
@@ -194,6 +188,6 @@ const MiddleBox = ({ post }) => {
       )}
     </div>
   );
-}
+};
 
-export default MiddleBox
+export default MiddleBox;

@@ -1,10 +1,9 @@
 import * as actionType from "./actionTypes";
 
 // create user post
-export const createUserPost = (dispatch, profile, postData) => {
+export const createUserPost = (profile, postData) => {
   return {
     type: actionType.CREATE_POST,
-    dispatch,
     profile,
     postData,
   };
@@ -19,32 +18,48 @@ export const getAllPosts = (data) => {
 };
 
 // comment on post
-export const commentOnPost = (dispatch, profile, postId, comment) => {
+export const commentOnPost = (profile, post, comment) => {
   return {
     type: actionType.COMMENT_ON_POST,
-    dispatch,
     profile,
-    postId,
+    post,
     comment,
   };
 };
 
 // Like post
-export const likePost = (dispatch, profile, postId) => {
+export const likePost = (profile, post) => {
   return {
     type: actionType.LIKE_POST,
-    dispatch,
+    profile,
+    post,
+  };
+};
+
+// Save Post
+export const savePost = (profile, postId) => {
+  return {
+    type: actionType.SAVE_POST,
     profile,
     postId,
   };
 };
 
-// Save Post
-export const savePost = (dispatch, profile, postId) => {
+// delete post
+export const deletePost = (profile, post) => {
   return {
-    type: actionType.SAVE_POST,
-    dispatch,
+    type: actionType.DELETE_POST,
     profile,
-    postId,
+    post,
+  };
+};
+
+// delete post comment
+export const deletePostComment = (profile, post, comment) => {
+  return {
+    type: actionType.DELETE_POST_COMMENT,
+    profile,
+    post,
+    comment,
   };
 };

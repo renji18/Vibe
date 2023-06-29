@@ -26,7 +26,7 @@ const Sidebar = ({ themeSwitch, classStyles }) => {
   };
 
   return (
-    <div className={`h-full z-10 flex items-center ${classStyles}`}>
+    <div className={`h-screen z-10 flex items-center ${classStyles}`}>
       <div className="flex justify-between items-center flex-col mx-4 h-[93vh]">
         <div className="flex-1 flex flex-col justify-between items-center bg-purple-500 dark:bg-my-black-1 rounded-[20px] w-[76px] py-4">
           <Link to="/">
