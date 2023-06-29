@@ -47,7 +47,7 @@ const MiddleBox = ({ post }) => {
     firebase.savePostHandler(post.postId);
   }
 
-  const commentHandler = (comment) => {
+  const   commentHandler = (comment) => {
     firebase.commentOnPostHandler(post.postId, comment);
     setCommentText("");
   }
@@ -86,12 +86,28 @@ const MiddleBox = ({ post }) => {
                 </div>
                 <BsThreeDots className="dark:filter dark:invert" size={20} />
               </div>
-              <img
+              {/* <img
                 src={cont?.content}
                 alt="post"
                 className="w-full"
                 onDoubleClick={likeHandler}
-              />
+              /> */}
+              {cont.type === "image" && (
+                <img
+                  src={cont.content}
+                  alt="post"
+                  className="w-full"
+                  onDoubleClick={likeHandler}
+                />
+              )}
+              {cont.type === "video" && (
+                <video
+                  src={cont.content}
+                  alt="post"
+                  className="w-full"
+                  onDoubleClick={likeHandler}
+                />
+              )}
               <div className="flex items-center justify-between mt-2 ">
                 <div className="flex items-center gap-3">
                   {isLiked ? (

@@ -11,7 +11,7 @@ import { FiPlusSquare } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { TbNotification } from "react-icons/tb";
 
-const Sidebar = ({ themeSwitch }) => {
+const Sidebar = ({ themeSwitch, classStyles }) => {
   const [hideMenu, setHideMenu] = useState(true);
   const { profile } = useSelector((state) => state.userData);
   const { isDarkTheme } = useSelector((state) => state.themeReducer);
@@ -26,7 +26,7 @@ const Sidebar = ({ themeSwitch }) => {
   };
 
   return (
-    <div className="h-full fixed z-10 flex items-center">
+    <div className={`h-full z-10 flex items-center ${classStyles}`}>
       <div className="flex justify-between items-center flex-col mx-4 h-[93vh]">
         <div className="flex-1 flex flex-col justify-between items-center bg-purple-500 dark:bg-my-black-1 rounded-[20px] w-[76px] py-4">
           <Link to="/">
