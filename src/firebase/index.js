@@ -16,7 +16,7 @@ import {
   savePost,
   saveUserData,
 } from "../redux/actions";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 // firebase context
 const FirebaseContext = createContext(null);
