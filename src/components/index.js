@@ -6,7 +6,6 @@ import EnterDetails from "./Authentication/EnterDetails";
 import Explore from "./Explore";
 import ChatBox from "./RightBox/components/ChatBox";
 import Notifications from "./Notifications";
-import Profile from "./Profile";
 import SavedPosts from "./SavedPosts";
 import ProfileBox from "./RightBox/components/ProfileBox";
 import SuggestionBox from "./SuggestionBox";
@@ -28,7 +27,6 @@ export {
   Explore,
   ChatBox,
   Notifications,
-  Profile,
   SavedPosts,
   ProfileBox,
   SuggestionBox,

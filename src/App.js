@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { Home, Login, NetworkError, Register } from "./pages"
+import { Home, Login, NetworkError, Profile, Register } from "./pages"
 import { EnterDetails, Loader } from "./components"
 import { useSelector, useDispatch } from "react-redux"
 import { ToastContainer, toast } from "react-toastify"
@@ -135,6 +135,11 @@ function App() {
                 <Home themeSwitch={themeSwitch} />
               )
             }
+          />
+          <Route
+            exact
+            path="/profile/me"
+            element={siteLoader ? <Loader /> : <Profile />}
           />
         </Routes>
       </BrowserRouter>

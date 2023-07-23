@@ -191,7 +191,7 @@ export async function handleSaveRegistrationData(
       )
     }
     const data = {
-      ...userData, //name, userName, profilepic, bio
+      ...userData, //name, userName, profilepic, bio, email
       registered: true,
       verified: false,
       accountType: "public",
@@ -199,7 +199,7 @@ export async function handleSaveRegistrationData(
       personalPosts: [], // saves post ids (different collection for all posts)
       likedPosts: [], // saves post ids (different collection for all posts)
       savedPosts: [], // saves post ids (different collection for all posts)
-      friends: [], // saves user ids
+      friends: [], // saves user id, name, image
       chat: [], // [{user id, data: [msg]}, {userId, data: [msg]}]
       notificatons: { request: [], like: [], comment: [] }, // request: [{userId, status(accepted, pending, rejected)}], likes: [{postId, userId}], comment: [{postId, userId}]
     }

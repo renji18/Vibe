@@ -84,14 +84,14 @@ const Sidebar = ({ themeSwitch }) => {
           </div>
           <div className="flex relative">
             <div className="flex flex-col items-center">
-              <Link to="/">
+              <Link to="/profile/me">
                 <div
                   title="Profile"
                   className="w-7 h-7 bg-my-black-1 dark:bg-my-gray-1 rounded-full flex items-center justify-center overflow-hidden"
                 >
-                  {profile.profilePic ? (
+                  {profile?.profilePic ? (
                     <img
-                      src={profile.profilePic}
+                      src={profile?.profilePic}
                       alt="profile"
                       className="rounded-full h-full scale-95"
                     />
