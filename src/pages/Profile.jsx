@@ -5,6 +5,8 @@ import { MdEmail } from "react-icons/md"
 import { MdAlternateEmail } from "react-icons/md"
 import { Sidebar } from "../components"
 import SingleFriend from "../components/Profile/SingleFriend"
+import SOMEIMAGE from "../assets/light_vibe_logo.png"
+import axios from "axios"
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({})
@@ -36,7 +38,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-black min-h-screen py-28">
+    <>
+    <Sidebar />
+      <div className="bg-black max-h-20 py-40">
       <div className="md:mx-20 mx-40 pt-10 bg-white">
         <div className="flex justify-center">
           <img
@@ -73,6 +77,7 @@ const Profile = () => {
         <div>posts, saved, liked</div>
       </div>
     </div>
+    </>
   )
 }
 
