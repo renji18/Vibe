@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { RiChat1Line } from "react-icons/ri";
 import { FiSend } from "react-icons/fi";
 import { BsBookmark, BsFillBookmarkFill } from "react-icons/bs";
-import { Button, CommentModal } from "../../";
-import { Carousel } from "react-responsive-carousel";
+import { CommentModal } from "../../";
 import { useFirebase } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { FaUser } from "react-icons/fa";
@@ -99,9 +98,23 @@ const MiddleBox = ({ post }) => {
                   className={`${index === currentImageIndex ? "" : "hidden"}`}
                 >
                   {cont.type === "image" && (
-                    <div>
+                    <div className="w-full relative">
+                      <div className="absolute flex px-1 justify-between w-full top-1/2">
+                        <div className="w-8 h-8 cursor-pointer bg-black/60 flex justify-center items-center rounded-full">
+                          <AiOutlineArrowLeft
+                            onClick={handlePreviousImage}
+                            className="text-white"
+                          />
+                        </div>
+                        <div className="w-8 h-8 cursor-pointer bg-black/60 top-1/2 flex justify-center items-center rounded-full">
+                          <AiOutlineArrowRight
+                            onClick={handleNextImage}
+                            className="text-white"
+                          />
+                        </div>
+                      </div>
                       <img
-                        src={cont.content}
+                        src={post.content[currentImageIndex].content}
                         alt="post"
                         className="w-full"
                         onDoubleClick={likeHandler}
@@ -109,18 +122,32 @@ const MiddleBox = ({ post }) => {
                     </div>
                   )}
                   {cont.type === "video" && (
-                    <video
-                      src={cont.content}
-                      alt="post_video"
-                      className="w-full"
-                      autoPlay
-                      onDoubleClick={likeHandler}
-                    />
+                    <div className="w-full relative">
+                      <div className="absolute flex px-1 justify-between w-full top-1/2">
+                        <div className="w-8 h-8 cursor-pointer bg-black/60 flex justify-center items-center rounded-full">
+                          <AiOutlineArrowLeft
+                            onClick={handlePreviousImage}
+                            className="text-white"
+                          />
+                        </div>
+                        <div className="w-8 h-8 cursor-pointer bg-black/60 top-1/2 flex justify-center items-center rounded-full">
+                          <AiOutlineArrowRight
+                            onClick={handleNextImage}
+                            className="text-white"
+                          />
+                        </div>
+                      </div>
+                      <video
+                        src={post.content[currentImageIndex].content}
+                        alt="post_video"
+                        className="w-full"
+                        autoPlay
+                        onDoubleClick={likeHandler}
+                      />
+                    </div>
                   )}
                 </div>
               ))}
-              <Button btnName="Prev" handleClick={handlePreviousImage} />
-              <Button btnName="Next" handleClick={handleNextImage} />
             </div>
             <div className="flex items-center justify-between mt-2 ">
               <div className="flex items-center gap-3">
