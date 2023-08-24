@@ -2,6 +2,7 @@ import * as actionType from "../actions/actionTypes";
 
 const initialState = {
   siteLoader: true,
+  networkReloadStatus: null,
 };
 
 const loader = (state = initialState, { type, data }) => {

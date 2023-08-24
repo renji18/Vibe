@@ -1,11 +1,15 @@
 // For Login and Register
 
 import React, { useState, useRef } from "react";
-import { Button, Mode } from ".";
-import { useFirebase } from "../firebase";
+import { Button, Mode } from "..";
+import { useFirebase } from "../../firebase";
 import { FaUser } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { handleUserNameExist } from "../../firebase/utility";
 
 const EnterDetails = ({ themeSwitch }) => {
+  const navigate = useNavigate();
   const [userFullName, setUserFullName] = useState("");
   const [userName, setUserName] = useState("");
   const [userBio, setUserBio] = useState("");
@@ -16,6 +20,8 @@ const EnterDetails = ({ themeSwitch }) => {
 
   const imgFile = useRef(null);
   const [userProfileImageUrl, setUserProfileImageUrl] = useState("");
+
+  const { userNames } = useSelector((state) => state.userData);
 
   const NAME = /^(?!\s)(?![\s\S]*\s$)[A-Za-z0-9 ]+$/;
   const USERNAME = /^\S*$/;
@@ -28,6 +34,13 @@ const EnterDetails = ({ themeSwitch }) => {
   const handleUserNameChange = (e) => {
     setUserName(e.target.value);
     setUsernameError("");
+  };
+
+  const handleUserNameExistCheck = async (e) => {
+    const res = await handleUserNameExist(e.target.value, userNames);
+    setTimeout(() => {
+      res && setUsernameError("This username is already taken");
+    }, 700);
   };
 
   const handleBioChange = (e) => {
@@ -75,6 +88,7 @@ const EnterDetails = ({ themeSwitch }) => {
         bio: userBio,
         profilePic: userProfileImage,
       });
+      navigate("/");
     }
   };
 
@@ -99,7 +113,7 @@ const EnterDetails = ({ themeSwitch }) => {
                 onClick={handleUploadImg}
                 src={userProfileImageUrl}
                 alt="profile"
-                className="w-[90px] h-[90px] rounded-full cursor-pointer"
+                className="w-[90px] h-[90px] rounded-full cursor-pointer object-contain"
               />
             ) : (
               <FaUser
@@ -142,7 +156,10 @@ const EnterDetails = ({ themeSwitch }) => {
               } w-full outline-none font-poppins dark:text-my-light text-my-gray-2 text-base px-4 py-3`}
               placeholder="Enter Username"
               value={userName}
-              onChange={handleUserNameChange}
+              onChange={(e) => {
+                handleUserNameChange(e);
+                handleUserNameExistCheck(e);
+              }}
             />
             {usernameError && (
               <p className="mt-1 text-red-500 text-sm">{usernameError}</p>

@@ -1,28 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaMoon } from "react-icons/fa";
 import { BsFillSunFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
-const Mode = ({ themeSwitch }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+const Mode = ({ themeSwitch, classStyles }) => {
+    const { isDarkTheme } = useSelector((state) => state.themeReducer);
 
   const toggleMode = () => {
-    setIsDarkMode(!isDarkMode);
     themeSwitch();
   };
 
   return (
-    <div className="absolute right-5 bottom-5 cursor-pointer">
+    <div className={`${classStyles} cursor-pointer`}>
       <div
         className={`circle-mode-switch flex items-center justify-center overflow-hidden"
         }`}
       >
         <div
-          className={`circle ${
-            isDarkMode ? "bg-my-light" : "bg-my-dark"
-          } rounded-full w-10 h-10 flex items-center justify-center`}
+          className="circle  rounded-full w-10 h-10 flex items-center justify-center"
           onClick={toggleMode}
         >
-          {isDarkMode ? (
+          {!isDarkTheme ? (
             <FaMoon className="icon text-my-dark" />
           ) : (
             <BsFillSunFill className=" w-5 h-5 icon text-my-light" />

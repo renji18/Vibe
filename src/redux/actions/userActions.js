@@ -8,39 +8,34 @@ export const getSingleUser = (data) => {
   };
 };
 
-// Main loader on route changes
-export const toggleMainLoader = (data) => ({
-  type: actionType.MAIN_LOADER,
-  data,
-});
-
-// Loader for firebase functions
-export const toggleFirebaseLoader = (data) => ({
-  type: actionType.FIREBASE_LOADER,
-  data,
-});
-
 // Register and Login user
-export const registerLoginSignOutUser = (method, profile, email, password) => ({
+export const registerLoginSignOutUser = (
+  method,
+  profile,
+  email,
+  password,
+  dispatch
+) => ({
   type: actionType.REGISTER_LOGIN_SIGNOUT_USER,
   method,
   profile,
   email,
   password,
+  dispatch,
 });
 
 // Save user data
-export const saveUserData = (
-  profile,
-  userData,
-  user,
-  dispatch,
-  setUser
-) => ({
+export const saveUserData = (profile, userData, user, dispatch, setUser) => ({
   type: actionType.SAVE_USER_DATA,
   profile,
   userData,
   user,
   dispatch,
   setUser,
+});
+
+// Get user names
+export const getUserNamesData = (data) => ({
+  type: actionType.GET_USER_NAMES,
+  data,
 });
