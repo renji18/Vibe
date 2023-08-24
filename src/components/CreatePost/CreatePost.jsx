@@ -15,7 +15,7 @@ const CreatePost = () => {
 
   const { firebaseLoader } = useSelector((state) => state?.loader)
 
-  const [desc, setDesc] = useState(null)
+  const [desc, setDesc] = useState("")
   const [postData, setPostData] = useState([])
 
   const [content, setContent] = useState(0)
@@ -78,26 +78,20 @@ const CreatePost = () => {
   }
 
   const handleCreatePost = () => {
-    let flag1 = false
+    console.log(postData, desc)
+    if (postData?.length < 1) return toast.error("Proper Data Not Provided")
+    let flag = false
     postData.map((i) => {
-      if (!i.file) return (flag1 = true)
-      return flag1
+      if (i.duration > 60) return (flag = true)
+      return flag
     })
-    if (flag1) return toast.error("Proper Data Not Provided")
-    let flag2 = false
-    postData.map((i) => {
-      if (i.duration > 60) return (flag2 = true)
-      return flag2
-    })
-    if (flag2) return toast.error("Video Too Long")
+    if (flag) return toast.error("Video Too Long")
     firebase.createUserPostHandler({ postData, desc })
+    setPostData([])
+    setDesc("")
+    handleCloseModal()
+    toast.success("Post created successfully.")
   }
-
-  useEffect(() => {
-    if (firebaseLoader === false) {
-      handleCloseModal()
-    }
-  }, [firebaseLoader])
 
   return (
     <div
@@ -127,7 +121,7 @@ const CreatePost = () => {
               } text-white cursor-pointer flex justify-center flex-col gap-4 items-center`}
             >
               <IoMdImages size={62} />
-              Upload Pic
+              Upload Post
               <input
                 type="file"
                 ref={imgRef}
@@ -159,6 +153,7 @@ const CreatePost = () => {
         <div className="gap-5 flex justify-between">
           <textarea
             placeholder="I feel like..."
+            value={desc}
             onChange={(e) => setDesc(e.target.value)}
             className="resize-none rounded-lg p-2 text-sm h-40 outline-none border-none w-full"
           ></textarea>

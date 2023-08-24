@@ -265,7 +265,6 @@ export async function handleCreateUserPost(profile, postData) {
       description: postData?.desc,
     }
     const res = await addDoc(collection(firestore, "posts"), data)
-    toast.success("Post created successfully.")
     const userRef = doc(firestore, "users", profile.uid)
     await updateDoc(userRef, {
       personalPosts: [...profile.personalPosts, res.id],
@@ -455,7 +454,7 @@ export async function handleDeletePost(profile, post) {
       return toast.error("You can't delete someone else' post")
     }
     await deleteDoc(doc(firestore, "posts", post.postId))
-    return toast.success("Post deleted success fully")
+    return toast.success("Post deleted successfully")
   } catch (error) {
     console.log(error)
     return errorHandler(error)
