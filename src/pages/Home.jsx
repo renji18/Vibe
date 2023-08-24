@@ -1,17 +1,19 @@
 import React from "react";
-import { Button } from "../components";
-import { useFirebase } from "../firebase";
+import { RightBox, LeftBox, Sidebar, MiddleSection } from "../components";
 
-const Home = () => {
-   const firebase = useFirebase();
-
-  return <div>
-     <Button
-         btnName={`SIGN OUT`}
-         classStyles="mt-6 text-base"
-         handleClick={firebase.signOutUser}
-       />
-  </div>;
+const Home = ({ themeSwitch }) => {
+  return (
+    <div className="w-full bg-purple-300 dark:bg-my-dark">
+      <div className="flex w-full h-full  bg-my-light dark:bg-my-dark ">
+        <div className="">
+          <Sidebar themeSwitch={themeSwitch} classStyles="fixed" />
+          <LeftBox classStyles="w-[20vw] ml-[8vw] fixed" />
+          <MiddleSection classStyles="w-[47vw] ml-[29vw]" />
+          <RightBox classStyles="w-[23vw] fixed" />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
