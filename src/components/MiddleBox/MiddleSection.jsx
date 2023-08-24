@@ -1,23 +1,29 @@
-import React from 'react'
-import MiddleBox from './components/MiddleBox';
-import { useSelector } from "react-redux";
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
+import React, { useEffect, useState } from "react"
+import MainPostBox from "./components/MainPostBox"
+import { useSelector } from "react-redux"
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi"
 
 const MiddleSection = ({ classStyles }) => {
-    const { posts } = useSelector((state) => state.postsData);
+  const { posts } = useSelector((state) => state?.postsData)
+
+  const [postData, setPostData] = useState([])
+
+  useEffect(() => {
+    setPostData(posts)
+  }, [posts])
 
   return (
     <div
       className={`bg-my-light dark:bg-my-dark  min-h-screen py-4 px-4 ${classStyles}`}
     >
-      {posts &&
-        posts.map((post, key) => (
+      {postData &&
+        postData?.map((post, key) => (
           <div key={key}>
-            <MiddleBox post={post} />
+            <MainPostBox post={post} />
           </div>
         ))}
     </div>
-  );
+  )
 }
 
 export default MiddleSection
