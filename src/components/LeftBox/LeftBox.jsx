@@ -1,9 +1,10 @@
 import React from 'react'
 import { SingleSuggestion } from "../";
 
-const LeftBox = () => {
+const LeftBox = ({ classStyles }) => {
   return (
-    <div className=" w-[20vw] h-[55%] bg-my-light ml-[8vw] pt-8 dark:bg-my-dark fixed">
+    <div className={`h-[55%] bg-my-light pt-8 dark:bg-my-dark
+    ${classStyles}`}>
       <div className="font-medium text-black dark:text-white tracking-wider pb-5">
         Suggestions
       </div>
