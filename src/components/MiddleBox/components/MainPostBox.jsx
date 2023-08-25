@@ -10,6 +10,7 @@ import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai"
 import CommentModal from "../../Common/CommentModal"
 
 const MainPostBox = ({ post }) => {
+  console.log(post)
 
   const firebase = useFirebase()
   const [isLiked, setIsLiked] = useState(false)
