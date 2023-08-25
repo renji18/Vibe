@@ -13,7 +13,7 @@ import RightBox from "./RightBox/RightBox";
 import Loader from "./Utility/Loader";
 import Menu from "./Sidebar/Menu";
 import MiddleSection from "./MiddleBox/MiddleSection";
-import MiddleBox from "./MiddleBox/components/MiddleBox";
+import MiddleBox from "./MiddleBox/components/MainPostBox";
 import LeftBox from "./LeftBox/LeftBox";
 import SingleSuggestion from "./LeftBox/components/SingleSuggestion";
 import CommentModal from "./Common/CommentModal";
