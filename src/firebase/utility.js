@@ -32,6 +32,8 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
         dispatch(getSingleUser(docSnap?.data()))
         setUser(data)
         await handleGetUserNamesData(dispatch)
+        const posts = await handleGetAllDocs("posts")
+        dispatch(getAllPosts(posts))
       } else {
         dispatch(getSingleUser(null))
         dispatch(getAllPosts(null))
@@ -41,6 +43,19 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
       dispatch(getAllPosts(null))
       setUser(null)
     }
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
+// get all docs
+export async function handleGetAllDocs(collectionName) {
+  try {
+    const ref = collection(firestore, collectionName)
+    const gibberishData = await getDocs(ref)
+    let docs = []
+    gibberishData?.forEach((data) => docs?.push(data?.data()))
+    return docs
   } catch (error) {
     return errorHandler(error)
   }
