@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import MainPostBox from "./components/MainPostBox"
 import { useSelector } from "react-redux"
-import { FiArrowLeft, FiArrowRight } from "react-icons/fi"
 
 const MiddleSection = ({ classStyles }) => {
   const { posts } = useSelector((state) => state?.postsData)
