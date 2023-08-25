@@ -62,7 +62,9 @@ const PostFooter = ({
       </div>
       <div className="mt-1">
         {post.likes && post.likes.length > 0 && (
-          <p className="dark:text-white text-sm font-semibold">{`${post.likes.length} likes`}</p>
+          <p className="dark:text-white text-sm font-semibold">{`${
+            post.likes.length
+          } ${post.likes.length > 1 ? "likes" : "like"}`}</p>
         )}
         <div className=" flex gap-2 items-center">
           <p className="dark:text-white font-semibold">{post.user}</p>
