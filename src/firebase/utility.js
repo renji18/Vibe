@@ -26,12 +26,14 @@ import { getAllPosts, getSingleUser, getUserNamesData } from "../redux/actions"
 export async function handleAuthStateChange(data, dispatch, setUser) {
   try {
     if (data) {
-      const docSnap = await getSingleDoc("users", data.uid)
+      const docSnap = await getSingleDoc("users", data?.uid)
       if (docSnap?.exists()) {
-        await handleAutoSignOut(docSnap.data())
-        dispatch(getSingleUser(docSnap.data()))
+        await handleAutoSignOut(docSnap?.data())
+        dispatch(getSingleUser(docSnap?.data()))
         setUser(data)
         await handleGetUserNamesData(dispatch)
+        const posts = await handleGetAllDocs("posts")
+        dispatch(getAllPosts(posts))
       } else {
         dispatch(getSingleUser(null))
         dispatch(getAllPosts(null))
@@ -46,16 +48,29 @@ export async function handleAuthStateChange(data, dispatch, setUser) {
   }
 }
 
+// get all docs
+export async function handleGetAllDocs(collectionName) {
+  try {
+    const ref = collection(firestore, collectionName)
+    const gibberishData = await getDocs(ref)
+    let docs = []
+    gibberishData?.forEach((data) => docs?.push(data?.data()))
+    return docs
+  } catch (error) {
+    return errorHandler(error)
+  }
+}
+
 // handle get usernames
 export async function handleGetUserNamesData(dispatch) {
   try {
     const userNameRef = collection(firestore, "users")
-    const gibberishUsers = await getDocs(userNameRef)
+    const gibberishData = await getDocs(userNameRef)
     let users = []
-    gibberishUsers.forEach((user) => users.push(user.data()))
+    gibberishData?.forEach((user) => users?.push(user?.data()))
     let userNames = []
-    users.forEach((user) => {
-      user.userName && userNames.push(user.userName)
+    users?.forEach((user) => {
+      user?.userName && userNames?.push(user?.userName)
     })
     dispatch(getUserNamesData(userNames))
   } catch (error) {
@@ -75,7 +90,7 @@ export async function handleUploadImage(file, location) {
     })
     const imgRef = ref(storage, location)
     const upload = await uploadBytes(imgRef, compressImage)
-    const res = await getDownloadURL(upload.ref)
+    const res = await getDownloadURL(upload?.ref)
     return res
   } catch (error) {
     errorHandler(error)
@@ -86,10 +101,9 @@ export async function handleUploadImage(file, location) {
 export async function handleUploadVideo(file) {
   try {
     // implement npm i video-compressor
-
-    const videoRef = ref(storage, `posts/videos/${Date.now()}-${file}`)
+    const videoRef = ref(storage, `posts/videos/${Date?.now()}-${file}`)
     const upload = await uploadBytes(videoRef, file)
-    const res = await getDownloadURL(upload.ref)
+    const res = await getDownloadURL(upload?.ref)
     return res
   } catch (error) {
     errorHandler(error)
@@ -123,13 +137,13 @@ export async function getSingleDoc(coll, id) {
 export async function handleRegistration(profile, email, password) {
   try {
     if (profile !== null) {
-      return toast.info(
+      return toast?.info(
         "A user is already signed in, try logging out before signing up a new user"
       )
     }
     const snap = await getSnapOfDocs("users", "email", "==", email)
-    if (!snap.empty) {
-      return toast.info(
+    if (!snap?.empty) {
+      return toast?.info(
         "Your account is already registered, please try logging in."
       )
     }
@@ -138,14 +152,14 @@ export async function handleRegistration(profile, email, password) {
       email,
       password
     )
-    await setDoc(doc(firestore, "users", res.user.uid), {
+    await setDoc(doc(firestore, "users", res?.user?.uid), {
       email,
-      uid: res.user.uid,
-      loginAt: Date.now(),
+      uid: res?.user?.uid,
+      loginAt: Date?.now(),
     })
-    toast.success("Account registered successfully.")
+    toast?.success("Account registered successfully.")
   } catch (error) {
-    console.log(error)
+    console?.log(error)
     return errorHandler(error)
   }
 }
@@ -154,18 +168,18 @@ export async function handleRegistration(profile, email, password) {
 export async function handleSignIn(dispatch, profile, email, password) {
   try {
     if (profile !== null) {
-      return toast.info("A user is already signed in, try logging out first")
+      return toast?.info("A user is already signed in, try logging out first")
     }
     const snap = await getSnapOfDocs("users", "email", "==", email)
-    if (snap.empty) {
-      return toast.warn(
+    if (snap?.empty) {
+      return toast?.warn(
         "Your account is not registered, please register yourself."
       )
     }
     const res = await signInWithEmailAndPassword(firebaseAuth, email, password)
-    const docSnap = await getSingleDoc("users", res.user.uid)
-    dispatch(getSingleUser(docSnap.data()))
-    toast.success("Logged in successfully.")
+    const docSnap = await getSingleDoc("users", res?.user?.uid)
+    dispatch(getSingleUser(docSnap?.data()))
+    toast?.success("Logged in successfully.")
   } catch (error) {
     return errorHandler(error)
   }
@@ -181,13 +195,13 @@ export async function handleSaveRegistrationData(
 ) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
     let profilePicUrl = ""
-    if (userData.profilePic !== "") {
+    if (userData?.profilePic !== "") {
       profilePicUrl = await handleUploadImage(
-        userData.profilePic,
-        `users/profilePics/${Date.now()}-${userData.profilePic}`
+        userData?.profilePic,
+        `users/profilePics/${Date?.now()}-${userData?.profilePic}`
       )
     }
     const data = {
@@ -203,12 +217,12 @@ export async function handleSaveRegistrationData(
       chat: [], // [{user id, data: [msg]}, {userId, data: [msg]}]
       notificatons: { request: [], like: [], comment: [] }, // request: [{userId, status(accepted, pending, rejected)}], likes: [{postId, userId}], comment: [{postId, userId}]
     }
-    const userRef = doc(firestore, "users", user.uid)
+    const userRef = doc(firestore, "users", user?.uid)
     await updateDoc(userRef, data)
     const docSnap = await getDoc(userRef)
-    dispatch(getSingleUser(docSnap.data()))
+    dispatch(getSingleUser(docSnap?.data()))
     setUser(data)
-    toast.success("Profile created successfully.")
+    toast?.success("Profile created successfully.")
   } catch (error) {
     return errorHandler(error)
   }
@@ -218,11 +232,11 @@ export async function handleSaveRegistrationData(
 export async function hanldeSignOut(profile) {
   try {
     if (profile === null) {
-      return toast.warn("You are already signed out")
+      return toast?.warn("You are already signed out")
     } else {
       await signOut(firebaseAuth)
     }
-    if (profile !== "forced signout") toast.success("Signed out successfully.")
+    if (profile !== "forced signout") toast?.success("Signed out successfully.")
   } catch (error) {
     return errorHandler(error)
   }
@@ -232,16 +246,16 @@ export async function hanldeSignOut(profile) {
 export async function handleCreateUserPost(profile, postData) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
     let contentData = []
-    if (postData.postData.length >= 1) {
-      if (postData.postData[0].type === "image") {
+    if (postData?.postData?.length >= 1) {
+      if (postData?.postData[0]?.type === "image") {
         contentData = [
           {
             content: await handleUploadImage(
-              postData.postData[0].file,
-              `posts/images/${Date.now()}-${postData.postData[0].file}`
+              postData?.postData[0]?.file,
+              `posts/images/${Date?.now()}-${postData?.postData[0]?.file}`
             ),
             type: "image",
           },
@@ -249,53 +263,53 @@ export async function handleCreateUserPost(profile, postData) {
       } else {
         contentData = [
           {
-            content: await handleUploadVideo(postData.postData[0].file),
+            content: await handleUploadVideo(postData?.postData[0]?.file),
             type: "video",
           },
         ]
       }
     }
     const data = {
-      userId: profile.uid,
+      userId: profile?.uid,
       content: contentData,
-      timeStamp: Date.now(),
-      user: profile.userName,
+      timeStamp: Date?.now(),
+      user: profile?.userName,
       likes: [],
       comments: [],
       description: postData?.desc,
     }
     const res = await addDoc(collection(firestore, "posts"), data)
-    const userRef = doc(firestore, "users", profile.uid)
+    const userRef = doc(firestore, "users", profile?.uid)
     await updateDoc(userRef, {
-      personalPosts: [...profile.personalPosts, res.id],
+      personalPosts: [...profile?.personalPosts, res?.id],
     })
     const updatedUrls = []
-    if (postData.postData.length > 1) {
-      for (let i = 1; i < postData.postData.length; i++) {
+    if (postData?.postData?.length > 1) {
+      for (let i = 1; i < postData?.postData?.length; i++) {
         let contentData
-        if (postData.postData[i].type === "image") {
+        if (postData?.postData[i]?.type === "image") {
           contentData = {
             content: await handleUploadImage(
-              postData.postData[i].file,
-              `posts/images/${Date.now()}-${postData.postData[i].file}`
+              postData?.postData[i]?.file,
+              `posts/images/${Date?.now()}-${postData?.postData[i]?.file}`
             ),
             type: "image",
           }
         } else {
           contentData = {
-            content: await handleUploadVideo(postData.postData[i].file),
+            content: await handleUploadVideo(postData?.postData[i]?.file),
             type: "video",
           }
         }
-        updatedUrls.push(contentData)
+        updatedUrls?.push(contentData)
       }
     }
-    const postRef = doc(firestore, "posts", res.id)
+    const postRef = doc(firestore, "posts", res?.id)
     const postSnap = await getDoc(postRef)
-    const snappedPostData = postSnap.data()
+    const snappedPostData = postSnap?.data()
     await updateDoc(postRef, {
-      postId: res.id,
-      content: [...snappedPostData.content, ...updatedUrls],
+      postId: res?.id,
+      content: [...snappedPostData?.content, ...updatedUrls],
     })
     return
   } catch (error) {
@@ -307,15 +321,15 @@ export async function handleCreateUserPost(profile, postData) {
 export async function handleAutoSignOut(data) {
   try {
     const lastLoginMonth = new Date(data?.loginAt)
-    if (lastLoginMonth.getMonth() + 3 < new Date(Date.now()).getMonth()) {
-      const userRef = doc(firestore, "users", data.uid)
+    if (lastLoginMonth?.getMonth() + 3 < new Date(Date?.now())?.getMonth()) {
+      const userRef = doc(firestore, "users", data?.uid)
       await updateDoc(userRef, {
-        loginAt: Date.now(),
+        loginAt: Date?.now(),
       })
       await hanldeSignOut("forced signout")
-      toast.info("Session Expired. Login Again")
+      toast?.info("Session Expired. Login Again")
       setTimeout(() => {
-        window.location.reload()
+        window?.location?.reload()
       }, 1500)
       return
     }
@@ -328,7 +342,7 @@ export async function handleAutoSignOut(data) {
 export async function handleUserNameExist(value, userNamesArray) {
   try {
     let duplicateUsername = false
-    userNamesArray.forEach((item) => {
+    userNamesArray?.forEach((item) => {
       if (item === value) return (duplicateUsername = true)
     })
     return duplicateUsername
@@ -341,24 +355,24 @@ export async function handleUserNameExist(value, userNamesArray) {
 export async function handleLikeUnlikePost(profile, post) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
     const postData = post
     const userData = profile
-    const userId = profile.uid
-    const postId = post.postId
-    let alreadyLiked = postData.likes.filter((id) => id === userId)
+    const userId = profile?.uid
+    const postId = post?.postId
+    let alreadyLiked = postData?.likes?.filter((id) => id === userId)
     let postsUpdatedLikesId = []
     let userUpdatedLikesId = []
-    if (alreadyLiked.length) {
-      postsUpdatedLikesId = postData?.likes.filter((id) => id !== userId)
-      userUpdatedLikesId = userData?.likedPosts.filter((id) => id !== postId)
+    if (alreadyLiked?.length) {
+      postsUpdatedLikesId = postData?.likes?.filter((id) => id !== userId)
+      userUpdatedLikesId = userData?.likedPosts?.filter((id) => id !== postId)
     } else {
       postsUpdatedLikesId =
-        postData.likes.length > 0 ? [...postData?.likes, userId] : [userId]
+        postData?.likes?.length > 0 ? [...postData?.likes, userId] : [userId]
       userUpdatedLikesId =
         userData?.likedPosts?.length > 0
-          ? [...userData.likedPosts, postId]
+          ? [...userData?.likedPosts, postId]
           : [postId]
     }
     const postRef = doc(firestore, "posts", postId)
@@ -371,7 +385,7 @@ export async function handleLikeUnlikePost(profile, post) {
     })
     return
   } catch (error) {
-    console.log(error)
+    console?.log(error)
     return errorHandler(error)
   }
 }
@@ -380,19 +394,19 @@ export async function handleLikeUnlikePost(profile, post) {
 export async function handleSaveUnsavePost(profile, postId) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
-    let userId = profile.uid
+    let userId = profile?.uid
     const userData = profile
-    let alreadySaved = userData.savedPosts.filter((id) => id === postId)
+    let alreadySaved = userData?.savedPosts?.filter((id) => id === postId)
     const userRef = doc(firestore, "users", userId)
     let userUpdatedSavedId = []
-    if (alreadySaved.length) {
-      userUpdatedSavedId = userData.savedPosts.filter((id) => id !== postId)
+    if (alreadySaved?.length) {
+      userUpdatedSavedId = userData?.savedPosts?.filter((id) => id !== postId)
     } else {
       userUpdatedSavedId =
-        userData.savedPosts.length > 0
-          ? [...userData.savedPosts, postId]
+        userData?.savedPosts?.length > 0
+          ? [...userData?.savedPosts, postId]
           : [postId]
     }
     await updateDoc(userRef, {
@@ -408,23 +422,23 @@ export async function handleSaveUnsavePost(profile, postId) {
 export async function handleCommentOnPost(profile, post, comment) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
 
     function df() {
-      return String(new Date(Date.now())).split(" ")
+      return String(new Date(Date?.now()))?.split(" ")
     }
 
     const commentObject = {
       userId: profile?.uid,
       userName: profile?.userName,
       comment,
-      id: Date.now(),
+      id: Date?.now(),
       createdOn: {
         dateString: `${df()[2]} ${df()[1]}, ${df()[3]}`,
         dayString: `${df()[0]}`,
         timeString: `${df()[4]}`,
-        timeStamp: Date.now(),
+        timeStamp: Date?.now(),
       },
     }
 
@@ -434,7 +448,7 @@ export async function handleCommentOnPost(profile, post, comment) {
         ? [...postData?.comments, commentObject]
         : [commentObject]
 
-    const postRef = doc(firestore, "posts", post.postId)
+    const postRef = doc(firestore, "posts", post?.postId)
     await updateDoc(postRef, {
       comments: postsUpdatedComments,
     })
@@ -448,15 +462,15 @@ export async function handleCommentOnPost(profile, post, comment) {
 export async function handleDeletePost(profile, post) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
-    if (profile.uid !== post.userId) {
-      return toast.error("You can't delete someone else' post")
+    if (profile?.uid !== post?.userId) {
+      return toast?.error("You can't delete someone else' post")
     }
-    await deleteDoc(doc(firestore, "posts", post.postId))
-    return toast.success("Post deleted successfully")
+    await deleteDoc(doc(firestore, "posts", post?.postId))
+    return toast?.success("Post deleted successfully")
   } catch (error) {
-    console.log(error)
+    console?.log(error)
     return errorHandler(error)
   }
 }
@@ -465,14 +479,14 @@ export async function handleDeletePost(profile, post) {
 export async function handleDeleteComment(profile, post, comment) {
   try {
     if (profile === null) {
-      return toast.warn("Please login first")
+      return toast?.warn("Please login first")
     }
-    if (profile.uid !== comment.userId || profile.uid !== post.userId) {
-      return toast.error("You can't delete this comment")
+    if (profile?.uid !== comment?.userId || profile?.uid !== post?.userId) {
+      return toast?.error("You can't delete this comment")
     }
-    const updatedComments = post.comments.filter((c) => c.id !== comment.id)
+    const updatedComments = post?.comments?.filter((c) => c?.id !== comment?.id)
 
-    const postRef = doc(firestore, "posts", post.postId)
+    const postRef = doc(firestore, "posts", post?.postId)
     await updateDoc(postRef, {
       comments: updatedComments,
     })

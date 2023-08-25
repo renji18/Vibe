@@ -1,84 +1,86 @@
 // For Login and Register
 
-import React, { useState, useRef } from "react";
-import { Button, Mode } from "..";
-import { useFirebase } from "../../firebase";
-import { FaUser } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { handleUserNameExist } from "../../firebase/utility";
+import React, { useState, useRef } from "react"
+import { Button, Mode } from ".."
+import { useFirebase } from "../../firebase"
+import { FaUser } from "react-icons/fa"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { handleUserNameExist } from "../../firebase/utility"
+import { LOADER_WHITE } from "../../assets"
 
 const EnterDetails = ({ themeSwitch }) => {
-  const navigate = useNavigate();
-  const [userFullName, setUserFullName] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userBio, setUserBio] = useState("");
-  const [userProfileImage, setUserProfileImage] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const firebase = useFirebase();
+  const navigate = useNavigate()
+  const [userFullName, setUserFullName] = useState("")
+  const [userName, setUserName] = useState("")
+  const [userBio, setUserBio] = useState("")
+  const [userProfileImage, setUserProfileImage] = useState("")
+  const [nameError, setNameError] = useState("")
+  const [usernameError, setUsernameError] = useState("")
+  const firebase = useFirebase()
 
-  const imgFile = useRef(null);
-  const [userProfileImageUrl, setUserProfileImageUrl] = useState("");
+  const imgFile = useRef(null)
+  const [userProfileImageUrl, setUserProfileImageUrl] = useState("")
 
-  const { userNames } = useSelector((state) => state.userData);
+  const { userNames } = useSelector((state) => state?.userData)
+  const { firebaseLoader } = useSelector((state) => state?.loader)
 
-  const NAME = /^(?!\s)(?![\s\S]*\s$)[A-Za-z0-9 ]+$/;
-  const USERNAME = /^\S*$/;
+  const NAME = /^(?!\s)(?![\s\S]*\s$)[A-Za-z0-9 ]+$/
+  const USERNAME = /^\S*$/
 
   const handleNameChange = (e) => {
-    setUserFullName(e.target.value);
-    setNameError("");
-  };
+    setUserFullName(e.target.value)
+    setNameError("")
+  }
 
   const handleUserNameChange = (e) => {
-    setUserName(e.target.value);
-    setUsernameError("");
-  };
+    setUserName(e.target.value)
+    setUsernameError("")
+  }
 
   const handleUserNameExistCheck = async (e) => {
-    const res = await handleUserNameExist(e.target.value, userNames);
+    const res = await handleUserNameExist(e.target.value, userNames)
     setTimeout(() => {
-      res && setUsernameError("This username is already taken");
-    }, 700);
-  };
+      res && setUsernameError("This username is already taken")
+    }, 700)
+  }
 
   const handleBioChange = (e) => {
-    setUserBio(e.target.value);
-  };
+    setUserBio(e.target.value)
+  }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setUserProfileImage(file);
-    setUserProfileImageUrl(URL.createObjectURL(file));
-  };
+    const file = e.target.files[0]
+    setUserProfileImage(file)
+    setUserProfileImageUrl(URL.createObjectURL(file))
+  }
 
   const handleUploadImg = () => {
-    imgFile.current.click();
-  };
+    imgFile.current.click()
+  }
 
   const handleRemoveImg = () => {
-    setUserProfileImage("");
-    document.getElementById("inputImg").value = "";
-  };
+    setUserProfileImage("")
+    document.getElementById("inputImg").value = ""
+  }
 
   const handleClick = async () => {
-    let isValid = true;
+    let isValid = true
 
     if (!userFullName) {
-      setNameError("Full name is required");
-      isValid = false;
+      setNameError("Full name is required")
+      isValid = false
     } else if (!NAME.test(userFullName)) {
-      setNameError("Invalid name");
-      isValid = false;
+      setNameError("Invalid name")
+      isValid = false
     }
 
     if (!userName) {
-      setUsernameError("Username is required");
-      isValid = false;
+      setUsernameError("Username is required")
+      isValid = false
     } else if (!USERNAME.test(userName)) {
-      setUsernameError("Invalid username");
-      isValid = false;
+      setUsernameError("Invalid username")
+      isValid = false
     }
 
     if (isValid) {
@@ -87,10 +89,10 @@ const EnterDetails = ({ themeSwitch }) => {
         name: userFullName,
         bio: userBio,
         profilePic: userProfileImage,
-      });
-      navigate("/");
+      })
+      navigate("/")
     }
-  };
+  }
 
   return (
     <div className="h-screen bg-my-light dark:bg-my-dark flex flex-col items-center">
@@ -157,8 +159,8 @@ const EnterDetails = ({ themeSwitch }) => {
               placeholder="Enter Username"
               value={userName}
               onChange={(e) => {
-                handleUserNameChange(e);
-                handleUserNameExistCheck(e);
+                handleUserNameChange(e)
+                handleUserNameExistCheck(e)
               }}
             />
             {usernameError && (
@@ -175,14 +177,20 @@ const EnterDetails = ({ themeSwitch }) => {
         </div>
 
         <Button
-          btnName="SAVE"
-          classStyles="mt-8 text-base"
+          btnName={
+            firebaseLoader === true ? (
+              <img className="text-center" src={LOADER_WHITE} alt="loader" />
+            ) : (
+              `SAVE`
+            )
+          }
+          classStyles="mt-8 flex justify-center text-base"
           handleClick={handleClick}
         />
       </div>
       <Mode themeSwitch={themeSwitch} />
     </div>
-  );
-};
+  )
+}
 
-export default EnterDetails;
+export default EnterDetails

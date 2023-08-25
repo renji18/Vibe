@@ -78,7 +78,6 @@ const CreatePost = () => {
   }
 
   const handleCreatePost = () => {
-    console.log(postData, desc)
     if (postData?.length < 1) return toast.error("Proper Data Not Provided")
     let flag = false
     postData.map((i) => {

@@ -1,10 +1,12 @@
 // For Login and Register
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "..";
-import { useFirebase } from "../../firebase";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { Button } from ".."
+import { useFirebase } from "../../firebase"
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
+import { useSelector } from "react-redux"
+import { LOADER_WHITE } from "../../assets"
 
 const PasswordInput = ({
   visible,
@@ -31,97 +33,99 @@ const PasswordInput = ({
         <AiOutlineEye className="w-5 h-5" onClick={toggleVisibility} />
       )}
     </div>
-  );
-};
+  )
+}
 
 const EmailAuth = ({ title, text, linkTo }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const firebase = useFirebase();
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [emailError, setEmailError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [confirmPasswordError, setConfirmPasswordError] = useState("")
+  const firebase = useFirebase()
+
+  const { firebaseLoader } = useSelector((state) => state?.loader)
 
   const EMAIL =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const PASSWORD = /^(?=.*\d)(?=.*[a-z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const PASSWORD = /^(?=.*\d)(?=.*[a-z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/
 
   const validateEmail = (email) => {
-    return EMAIL.test(email);
-  };
+    return EMAIL.test(email)
+  }
 
   const validatePassword = (password) => {
-    return PASSWORD.test(password);
-  };
+    return PASSWORD.test(password)
+  }
 
   const validateConfirmPassword = (password, confirmPassword) => {
     if (password && confirmPassword !== "") {
-      return password === confirmPassword;
+      return password === confirmPassword
     }
-    return false;
-  };
+    return false
+  }
 
   const togglePassword = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    setEmailError("");
-  };
+    setEmail(e.target.value)
+    setEmailError("")
+  }
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    setPasswordError("");
-  };
+    setPassword(e.target.value)
+    setPasswordError("")
+  }
 
   const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-    setConfirmPasswordError("");
-  };
+    setConfirmPassword(e.target.value)
+    setConfirmPasswordError("")
+  }
 
   const handleClick = async () => {
-    let isValid = true;
+    let isValid = true
 
     if (!email) {
-      setEmailError("Email is required");
-      isValid = false;
+      setEmailError("Email is required")
+      isValid = false
     } else if (!validateEmail(email)) {
-      setEmailError("Invalid email address");
-      isValid = false;
+      setEmailError("Invalid email address")
+      isValid = false
     }
 
     if (!password) {
-      setPasswordError("Password is required");
-      isValid = false;
+      setPasswordError("Password is required")
+      isValid = false
     } else if (password.length < 8) {
-      setPasswordError("Password must be atleast 8 characters long");
-      isValid = false;
+      setPasswordError("Password must be atleast 8 characters long")
+      isValid = false
     } else if (!validatePassword(password)) {
       setPasswordError(
         "Password must include letter, special character, and number."
-      );
-      isValid = false;
+      )
+      isValid = false
     }
 
     if (title === "SIGN UP") {
       if (!confirmPassword) {
-        setConfirmPasswordError("Confirm password is required");
-        isValid = false;
+        setConfirmPasswordError("Confirm password is required")
+        isValid = false
       } else if (!validateConfirmPassword(password, confirmPassword)) {
-        setConfirmPasswordError("Passwords do not match");
-        isValid = false;
+        setConfirmPasswordError("Passwords do not match")
+        isValid = false
       }
     }
 
     if (isValid) {
       title === "SIGN IN"
         ? firebase.signInUserUsingEmailAndPassword(email, password)
-        : firebase.signUpUserUsingEmailAndPassword(email, password);
+        : firebase.signUpUserUsingEmailAndPassword(email, password)
     }
-  };
+  }
 
   return (
     <div className="h-full flex flex-col justify-center w-1/4 lgm:w-1/3 md:w-2/5 sm:w-4/5">
@@ -137,6 +141,7 @@ const EmailAuth = ({ title, text, linkTo }) => {
                 : "dark:border-my-black-1 border-my-gray-2"
             }  w-full outline-none font-poppins dark:text-my-light text-my-gray-2 text-base mt-4 px-4 py-3`}
             placeholder="Email"
+            autoFocus
             value={email}
             onChange={handleEmailChange}
           />
@@ -190,11 +195,21 @@ const EmailAuth = ({ title, text, linkTo }) => {
           FORGOT PASSWORD?
         </Link>
       )}
+      {/* {firebaseLoader === true ? (
+        <img src={LOADER} alt="loader" />
+      ) : ( */}
       <Button
-        btnName={`${title.toUpperCase()} WITH EMAIL`}
-        classStyles="mt-8 text-base md:text-sm"
+        btnName={
+          firebaseLoader === true ? (
+            <img className="text-center" src={LOADER_WHITE} alt="loader" />
+          ) : (
+            `${title.toUpperCase()} WITH EMAIL`
+          )
+        }
+        classStyles="mt-8 flex justify-center text-base md:text-sm"
         handleClick={handleClick}
       />
+      {/* )} */}
       <Link
         to={linkTo}
         className="text-xs mt-2 text-end text-my-gray-2 border-b border-my-gray-1 pb-3"
@@ -207,7 +222,7 @@ const EmailAuth = ({ title, text, linkTo }) => {
         handleClick={firebase.signOutUser}
       />
     </div>
-  );
-};
+  )
+}
 
-export default EmailAuth;
+export default EmailAuth
